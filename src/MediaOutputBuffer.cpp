@@ -1,9 +1,9 @@
 #include "MediaOutputBuffer.h"
 #include <VS1053.H>
 
-MediaOutputBuffer::MediaOutputBuffer(VS1053 *vs1053player)
+MediaOutputBuffer::MediaOutputBuffer(VS1053 *vs1053)
 {
-    this->vs1053player = vs1053player;
+    this->vs1053 = vs1053;
 }
 
 void MediaOutputBuffer::write(uint8_t byte, bool force)
@@ -14,7 +14,7 @@ void MediaOutputBuffer::write(uint8_t byte, bool force)
     buf[length++] = byte;               // Save byte in cunkbuffer
     if (length == sizeof(buf) || force) // Buffer full?
     {
-        this->vs1053player->playChunk(buf, length); // Send to player
+        this->vs1053->playChunk(buf, length); // Send to player
         length = 0;                                 // Reset length
     }
     totalByteLength++;

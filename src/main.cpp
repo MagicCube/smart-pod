@@ -1,20 +1,8 @@
-// Wiring:
-// ESP   Wired to VS1053
-// --- -------------------
-// D0  DCS
-// D1  CS
-// D2  DREQ
-// D5  SCK
-// D6  MISO
-// D7  MOSI
-// --- -------------------
-// RST RESET
-
-
-// Flash Layout of ESP8266
-// |--------------|-------|---------------|--|--|--|--|--|
-// ^              ^       ^               ^     ^
-// Sketch    OTA update   File system   EEPROM  WiFi config (SDK)
+/*
+ * Smart Radio
+ *
+ * Creator: Henry Li
+ */
 
 #include <Arduino.h>
 #include <FS.h>
@@ -24,19 +12,19 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 
-#include <log.h>
 #include <VS1053.h>
+#include <log.h>
 
 #include "MediaInputBuffer.h"
 #include "MediaOutputBuffer.h"
 
-extern "C"
-{
-    #include "user_interface.h"
+extern "C" {
+#include "user_interface.h"
 }
 
 // WiFi Settings
-#define WIFI_SSID "Henry's Netgear"
+//#define WIFI_SSID "Henry's Netgear"
+#define WIFI_SSID "Henry's iPhone 6"
 #define WIFI_PWD "13913954971"
 
 // VS1053 Settings
@@ -47,19 +35,23 @@ extern "C"
 // Global Variables
 
 // Global Objects
-VS1053 vs1053player(VS1053_CS_PIN, VS1053_DCS_PIN, VS1053_DREQ_PIN);
+VS1053 vs1053(VS1053_CS_PIN, VS1053_DCS_PIN, VS1053_DREQ_PIN);
+WiFiClient httpClient;
 
-MediaInputBuffer mediaInputBuffer;                   // Buffer for input stream from file or network
-MediaOutputBuffer mediaOutputBuffer(&vs1053player);  // Buffer for output stream to VS1053
+// Buffer for input stream from file or network
+MediaInputBuffer mediaInputBuffer;
+// Buffer for output stream to VS1053
+MediaOutputBuffer mediaOutputBuffer(&vs1053);
 
-Stream *mediaInputStream = NULL;                     // mediaInputStream could be pointed to a FileInputStream or NetworkInputStream
-File fileInputStream;                                // Input stream for local files.
+// mediaInputStream could be pointed to a FileInputStream or NetworkInputStream
+Stream *mediaInputStream = NULL;
+File fileInputStream; // Input stream for local files.
 
 
 // Function Declarations
 void setupWiFi();
 bool playLocalFile(String path);
-
+bool playRemoteUrl(String url);
 
 
 void setup()
@@ -77,25 +69,25 @@ void setup()
     log("Setting up file system....");
     SPIFFS.begin();
 
-    //log("Setting up WiFi...");
-    //setupWiFi();
-    //log("Setting up OTA...");
-    //ArduinoOTA.begin();
+    log("Setting up WiFi...");
+    setupWiFi();
+    // log("Setting up OTA...");
+    // ArduinoOTA.begin();
 
     // Setup VS1053
     SPI.begin();
-    vs1053player.begin();
+    vs1053.begin();
     // Set the initial volume
-    vs1053player.setVolume(100);
+    vs1053.setVolume(100);
 
-    log("Playing local media file...");
-    playLocalFile("/test.mp3");
+    // playLocalFile("/test.mp3");
+    playRemoteUrl("http://lhttp.qingting.fm/live/387/64k.mp3");
 }
 
 void loop()
 {
     // Handling OTA request
-    //ArduinoOTA.handle();
+    // ArduinoOTA.handle();
 
     // ****** READING FROM INPUT STREAM *******
     // When mediaInputStream has been assigned
@@ -105,34 +97,29 @@ void loop()
     }
 
     // ********* KEEP VS1053 FILLED **********
-    while (vs1053player.data_request() && mediaInputBuffer.available())
+    while (vs1053.data_request() && mediaInputBuffer.available())
     {
         mediaOutputBuffer.write(mediaInputBuffer.read());
     }
 }
 
 
-
-
-
-
-
-
 void setupWiFi()
 {
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PWD);
-    log("Connecting to %s", WIFI_STA);
+    // log("Connecting to %s", WIFI_STA);
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
         Serial.print(".");
     }
-    log(WiFi.localIP().toString());
+    // log(WiFi.localIP().toString());
 }
 
 bool playLocalFile(String path)
 {
+    log("Loading %s...", path.c_str());
     fileInputStream = SPIFFS.open(path, "r"); // Open the file
     if (!fileInputStream)
     {
@@ -142,4 +129,21 @@ bool playLocalFile(String path)
     mediaInputStream = &fileInputStream;
     log("%s has been loaded.", path.c_str());
     return true;
+}
+
+bool playRemoteUrl(String url)
+{
+    log("Loading %s...");
+    const String host = "lhttp.qingting.fm";
+    const int port = 80;
+    const String path = "/live/387/64k.mp3";
+    if (httpClient.connect(host.c_str(), port))
+    {
+        httpClient.print(String("GET ") + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" +
+                         "Icy-MetaData:1\r\n" + "Connection: close\r\n\r\n");
+        mediaInputStream = &httpClient;
+        log("%s has been loaded.", url.c_str());
+        return true;
+    }
+    return false;
 }
