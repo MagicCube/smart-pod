@@ -1,5 +1,5 @@
 /*
- * Smart Radio
+ * Smart Radio - A ESP8266 and VS1053 driven WebRadio and Internet music player.
  *
  * Creator: Henry Li
  */
@@ -23,8 +23,8 @@ extern "C" {
 }
 
 // WiFi Settings
-//#define WIFI_SSID "Henry's Netgear"
-#define WIFI_SSID "Henry's iPhone 6"
+#define WIFI_SSID "Henry's TP-LINK"
+//#define WIFI_SSID "Henry's iPhone 6"
 #define WIFI_PWD "13913954971"
 
 // VS1053 Settings
@@ -78,7 +78,7 @@ void setup()
     SPI.begin();
     vs1053.begin();
     // Set the initial volume
-    vs1053.setVolume(100);
+    vs1053.setVolume(80);
 
     // playLocalFile("/test.mp3");
     playRemoteUrl("http://lhttp.qingting.fm/live/387/64k.mp3");
@@ -133,14 +133,16 @@ bool playLocalFile(String path)
 
 bool playRemoteUrl(String url)
 {
-    log("Loading %s...");
-    const String host = "lhttp.qingting.fm";
+    log("Loading %s...", url.c_str());
     const int port = 80;
-    const String path = "/live/387/64k.mp3";
+    //const String host = "lhttp.qingting.fm";
+    //const String path = "/live/387/64k.mp3";
+    const String host = "m2.music.126.net";
+    const String path = "/jdhQEW6xQVpWiYmfD7p9Ag==/3088528162423768.mp3";
     if (httpClient.connect(host.c_str(), port))
     {
         httpClient.print(String("GET ") + path + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" +
-                         "Icy-MetaData:1\r\n" + "Connection: close\r\n\r\n");
+                         "Connection: close\r\n\r\n");
         mediaInputStream = &httpClient;
         log("%s has been loaded.", url.c_str());
         return true;
