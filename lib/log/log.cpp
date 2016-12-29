@@ -1,6 +1,6 @@
-#include "dbgprint.h";
+#include "log.h";
 
-char *dbgprint(const char *format, ...)
+char *log(const char *format, ...)
 {
     static char sbuf[DEBUG_BUFFER_SIZE]; // For debug lines
     va_list varArgs;                     // For variable number of params
@@ -14,4 +14,9 @@ char *dbgprint(const char *format, ...)
         Serial.println(sbuf); // and the info
     }
     return sbuf; // Return stored string
+}
+
+char *log(String message)
+{
+    return log(message.c_str());
 }
