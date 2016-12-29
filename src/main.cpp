@@ -15,8 +15,8 @@
 #include <VS1053.h>
 #include <log.h>
 
-#include "MediaInputBuffer.h"
-#include "MediaOutputBuffer.h"
+#include "./buffer/MediaInputBuffer.h"
+#include "./buffer/MediaOutputBuffer.h"
 
 extern "C" {
 #include "user_interface.h"
