@@ -1,16 +1,17 @@
-#ifndef MEDIA_BUFFER_H
-#define MEDIA_BUFFER_H
+#ifndef MEDIA_INPUT_BUFFER_H
+#define MEDIA_INPUT_BUFFER_H
 
 #include <Arduino.h>
 
-class InputBuffer
+class MediaInputBuffer
 {
   public:
-    InputBuffer(int bufferSize = 18000);
-    bool hasSpace();
+    MediaInputBuffer(int bufferSize = 18000);
+    bool canWrite();
     int available();
     void write(uint8_t byte);
     uint8_t read();
+    void readFromStream(Stream* inputStream, int maxChunkSize = 1024);
     void clear();
 
   private:
