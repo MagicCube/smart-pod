@@ -141,7 +141,7 @@ void VS1053::begin()
     log("Reset VS1053...");
     digitalWrite(dcs_pin, LOW); // Low & Low will bring reset pin low
     digitalWrite(cs_pin, LOW);
-    delay(2000);
+    delay(500);
     log("End reset VS1053...");
     digitalWrite(dcs_pin, HIGH); // Back to normal again
     digitalWrite(cs_pin, HIGH);
