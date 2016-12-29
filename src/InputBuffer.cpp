@@ -17,7 +17,7 @@ int InputBuffer::available()
     return readCount;
 }
 
-void InputBuffer::put(uint8_t byte)
+void InputBuffer::write(uint8_t byte)
 {
     // No check on available space.  See ringspace()
     *(bytes + writeIndex) = byte; // Put byte in ringbuffer
@@ -28,7 +28,7 @@ void InputBuffer::put(uint8_t byte)
     readCount++; // Count number of bytes in the
 }
 
-uint8_t InputBuffer::get()
+uint8_t InputBuffer::read()
 {
     // Assume there is always something in the bufferpace.  See ringavail()
     if (++readIndex == size) // Increment pointer and

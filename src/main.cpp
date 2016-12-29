@@ -1,3 +1,22 @@
+//******************************************************************************************
+//*  Esp_radio -- Webradio receiver for ESP8266, 1.8 color display and VS1053 MP3 module.  *
+//*  With ESP8266 running at 80 MHz, it is capable of handling up to 256 kb bitrate.       *
+//*  With ESP8266 running at 160 MHz, it is capable of handling up to 320 kb bitrate.      *
+//******************************************************************************************
+//
+// Wiring:
+// ESP   Wired to VS1053
+// --- -------------------
+// D0  DCS
+// D1  CS
+// D2  DREQ
+// D5  SCK
+// D6  MISO
+// D7  MOSI
+// --- -------------------
+// RST RESET
+
+
 #include <Arduino.h>
 #include <FS.h>
 #include <SPI.h>
@@ -10,6 +29,11 @@
 #include <dbgprint.h>
 
 #include "InputBuffer.h"
+
+extern "C"
+{
+    #include "user_interface.h"
+}
 
 enum DataMode
 {
@@ -35,8 +59,8 @@ enum DataMode
 #define VS1053_DREQ_PIN D2
 
 // Global Variables
-uint32_t totalcount = 0; // Counter mp3 data
-DataMode datamode;       // State of datastream
+DataMode dataMode;       // State of datastream
+uint32_t totalcount = 0; // Counter mp3 dat\\pl.0
 int metacount;           // Number of bytes in metadata
 int metaint = 0;         // Number of databytes between metadata
 char metaline[200];      // Readable line in metadata
@@ -49,6 +73,63 @@ int bitrate;             // Bitrate in kb/sec
 File mp3file;
 VS1053 vs1053player(VS1053_CS_PIN, VS1053_DCS_PIN, VS1053_DREQ_PIN);
 InputBuffer inputBuffer;
+
+
+// Function Declarations
+void setupWiFi();
+bool playLocalFile(String path);
+bool chkhdrline(const char *str);
+void handleByte(uint8_t b, bool force = false);
+
+
+
+void setup()
+{
+    Serial.begin(115200);
+
+    system_update_cpu_freq(160);    // Set to 160 MHz in order to get better I/O performance
+
+    SPIFFS.begin();
+    //setupWiFi();
+    //ArduinoOTA.begin();
+
+    SPI.begin();
+    vs1053player.begin();
+    vs1053player.setVolume(100);
+
+    playLocalFile("/test.mp3");
+}
+
+void loop()
+{
+    //ArduinoOTA.handle();
+
+    int maxChunkSize;
+    maxChunkSize = mp3file.available();
+    if (maxChunkSize > 1024) // Reduce byte count for this loop()
+    {
+        maxChunkSize = 1024;
+    }
+
+    while (inputBuffer.hasSpace() && maxChunkSize--)
+    {
+        inputBuffer.write(mp3file.read()); // Yes, store one byte in inputBuffer
+    }
+
+    //yield();
+
+    while (vs1053player.data_request() && inputBuffer.available()) // Try to keep VS1053 filled
+    {
+         handleByte(inputBuffer.read()); // Yes, handle it
+    }
+}
+
+
+
+
+
+
+
 
 void setupWiFi()
 {
@@ -71,7 +152,7 @@ bool playLocalFile(String path)
         return false;
     }
     dbgprint("%s has been loaded.", path.c_str());
-    datamode = INIT;
+    dataMode = INIT;
     return true;
 }
 
@@ -101,7 +182,7 @@ bool chkhdrline(const char *str)
     return false; // End of string without colon
 }
 
-void handleByte(uint8_t b, bool force = false)
+void handleByte(uint8_t b, bool force)
 {
     static uint16_t metaindex;                          // Index in metaline
     static uint16_t playlistcnt;                        // Counter to find right entry in playlist
@@ -111,18 +192,17 @@ void handleByte(uint8_t b, bool force = false)
     static int chunkcount = 0;                          // Data in chunk
     static bool firstchunk = true;                      // First chunk as input
     char *p;                                            // Pointer in metaline
-    int i;                                              // Loop control
 
-    if (datamode == INIT) // Initialize for header receive
+    if (dataMode == INIT) // Initialize for header receive
     {
         metaint = 0;       // No metaint found
-        LFcount = 0;       // For detection end of header
+        LFcount = 0;       // For detection end of header (with 2 linebreaks)
         bitrate = 0;       // Bitrate still unknown
         metaindex = 0;     // Prepare for new line
-        datamode = HEADER; // Handle header
+        dataMode = DATA; // Handle header
         totalcount = 0;    // Reset totalcount
     }
-    if (datamode == DATA) // Handle next byte of MP3/Ogg data
+    if (dataMode == DATA) // Handle next byte of MP3/Ogg data
     {
         buf[chunkcount++] = b;                  // Save byte in chunkbuffer
         if (chunkcount == sizeof(buf) || force) // Buffer full?
@@ -131,12 +211,12 @@ void handleByte(uint8_t b, bool force = false)
             {
                 firstchunk = false;
                 dbgprint("First chunk:");   // Header for printout of first chunk
-                for (i = 0; i < 32; i += 8) // Print 4 lines
-                {
-                    dbgprint("%02X %02X %02X %02X %02X %02X %02X %02X", buf[i], buf[i + 1],
-                             buf[i + 2], buf[i + 3], buf[i + 4], buf[i + 5], buf[i + 6],
-                             buf[i + 7]);
-                }
+                // for (i = 0; i < 32; i += 8) // Print 4 lines
+                // {
+                //     dbgprint("%02X %02X %02X %02X %02X %02X %02X %02X", buf[i], buf[i + 1],
+                //              buf[i + 2], buf[i + 3], buf[i + 4], buf[i + 5], buf[i + 6],
+                //              buf[i + 7]);
+                // }
             }
             vs1053player.playChunk(buf, chunkcount); // Yes, send to player
             chunkcount = 0;                          // Reset count
@@ -151,144 +231,9 @@ void handleByte(uint8_t b, bool force = false)
                     vs1053player.playChunk(buf, chunkcount); // Yes, send to player
                     chunkcount = 0;                          // Reset count
                 }
-                datamode = METADATA;
+                dataMode = METADATA;
                 firstmetabyte = true; // Expecting first metabyte (counter)
             }
         }
-        return;
-    }
-    if (datamode == HEADER) // Handle next byte of MP3 header
-    {
-        if ((b > 0x7F) ||  // Ignore unprintable characters
-            (b == '\r') || // Ignore CR
-            (b == '\0'))   // Ignore NULL
-        {
-            // Yes, ignore
-        }
-        else if (b == '\n') // Linefeed ?
-        {
-            LFcount++;                  // Count linefeeds
-            metaline[metaindex] = '\0'; // Mark end of string
-            metaindex = 0;              // Reset for next line
-            if (chkhdrline(metaline))   // Reasonable input?
-            {
-                dbgprint(metaline); // Yes, Show it
-                if ((p = strstr(metaline, "icy-br:")))
-                {
-                    bitrate = atoi(p + 7); // Found bitrate tag, read the bitrate
-                    if (bitrate == 0)      // For Ogg br is like "Quality 2"
-                    {
-                        bitrate = 87; // Dummy bitrate
-                    }
-                }
-                else if ((p = strstr(metaline, "icy-metaint:")))
-                {
-                    metaint = atoi(p + 12); // Found metaint tag, read the value
-                }
-                else if ((p = strstr(metaline, "icy-name:")))
-                {
-                    dbgprint(p + 9);
-                    strncpy(icyname, p + 9, sizeof(icyname)); // Save station name
-                    icyname[sizeof(icyname) - 1] = '\0';      // Take care of delimeter
-                }
-            }
-            if (LFcount == 2)
-            {
-                dbgprint("Switch to DATA, bitrate is %d", // Show bitrate
-                         bitrate);
-                datamode = DATA;          // Expecting data now
-                datacount = metaint;      // Number of bytes before first metadata
-                chunkcount = 0;           // Reset chunkcount
-                vs1053player.startSong(); // Start a new song
-            }
-        }
-        else
-        {
-            metaline[metaindex] = (char)b;          // Normal character, put new char in metaline
-            if (metaindex < (sizeof(metaline) - 2)) // Prevent buffer overflow
-            {
-                metaindex++;
-            }
-            LFcount = 0; // Reset double CRLF detection
-        }
-        return;
-    }
-    if (datamode == METADATA) // Handle next bye of metadata
-    {
-        if (firstmetabyte) // First byte of metadata?
-        {
-            firstmetabyte = false;  // Not the first anymore
-            metacount = b * 16 + 1; // New count for metadata including length byte
-            metaindex = 0;          // Place to store metadata
-            if (metacount > 1)
-            {
-                dbgprint("Metadata block %d bytes",
-                         metacount - 1); // Most of the time there are zero bytes of metadata
-            }
-        }
-        else
-        {
-            metaline[metaindex] = (char)b;          // Normal character, put new char in metaline
-            if (metaindex < (sizeof(metaline) - 2)) // Prevent buffer overflow
-            {
-                metaindex++;
-            }
-        }
-        if (--metacount == 0)
-        {
-            if (metaindex) // Any info present?
-            {
-                metaline[metaindex] = '\0';
-                // metaline contains artist and song name.  For example:
-                // "StreamTitle='Don McLean - American Pie';StreamUrl='';"
-                // Sometimes it is just other info like:
-                // "StreamTitle='60s 03 05 Magic60s';StreamUrl='';"
-                // Isolate the StreamTitle, remove leading and trailing quotes if present.
-                // showstreamtitle(metaline); // Show artist and title if present in metadata
-                dbgprint(metaline);
-            }
-            datacount = metaint; // Reset data count
-            chunkcount = 0;      // Reset chunkcount
-            datamode = DATA;     // Expecting data
-        }
-    }
-}
-
-void setup()
-{
-    Serial.begin(115200);
-
-    SPIFFS.begin();
-    //setupWiFi();
-    //ArduinoOTA.begin();
-
-    SPI.begin();
-    vs1053player.begin();
-    vs1053player.setVolume(80);
-
-    playLocalFile("/test.mp3");
-}
-
-void loop()
-{
-    //ArduinoOTA.handle();
-
-    int maxChunkSize;
-    maxChunkSize = mp3file.available();
-    if (maxChunkSize > 1024) // Reduce byte count for this loop()
-    {
-        maxChunkSize = 1024;
-    }
-
-    while (inputBuffer.hasSpace() && maxChunkSize--)
-    {
-        inputBuffer.put(mp3file.read()); // Yes, store one byte in inputBuffer
-    }
-
-    //yield();
-
-    while (vs1053player.data_request() && inputBuffer.available()) // Try to keep VS1053 filled
-    {
-         handleByte(inputBuffer.get()); // Yes, handle it
     }
 }

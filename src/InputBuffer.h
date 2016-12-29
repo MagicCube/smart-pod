@@ -9,8 +9,8 @@ class InputBuffer
     InputBuffer(int bufferSize = 18000);
     bool hasSpace();
     int available();
-    void put(uint8_t byte);
-    uint8_t get();
+    void write(uint8_t byte);
+    uint8_t read();
     void clear();
 
   private:
