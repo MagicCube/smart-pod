@@ -1,5 +1,5 @@
 # smart-radio
-A ESP8266 and VS1053 driven WebRadio and Internet music player.
+An ESP8266 and VS1053 driven WebRadio and Internet music player.
 
 ## Features
 
