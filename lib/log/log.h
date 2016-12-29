@@ -6,7 +6,7 @@
 #define DEBUG true
 #define DEBUG_BUFFER_SIZE 100
 
-char *dbgprint(const char *format, ...);
-char *dbgprint(const String format, ...);
+char *log(const char *format, ...);
+char *log(const String message);
 
 #endif
