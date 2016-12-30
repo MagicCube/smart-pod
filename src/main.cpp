@@ -4,20 +4,25 @@
  * Creator: Henry Li
  */
 
+// Libraries for Arduino
 #include <Arduino.h>
-#include <FS.h>
 #include <SPI.h>
 
+// Libraries for ESP8266 - Arduino
 #include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#include <FS.h>
 
+// Libraries for Hardwares
 #include <VS1053.h>
+
+// Libraries by me
 #include <Console.h>
+#include <URLParser.h>
 
 #include "./media/MediaOutputBuffer.h"
 #include "./stream/GeneralInputBuffer.h"
-#include "./util/URLParser.h"
 
 extern "C" {
 #include "user_interface.h"
