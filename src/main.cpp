@@ -196,13 +196,20 @@ bool playRemoteUrl(String urlString)
     URL url = parseURL(urlString);
     if (url.isValid)
     {
-        if (httpClient.connect(url.host.c_str(), url.port))
+        if (url.protocol.equals("http"))
         {
-            httpClient.print(String("GET ") + url.path + " HTTP/1.1\r\n" + "Host: " + url.host +
-                             "\r\n" + "Connection: close\r\n\r\n");
-            currentInputStream = &httpClient;
-            Console::info("%s has been loaded.", urlString.c_str());
-            return true;
+            if (httpClient.connect(url.host.c_str(), url.port))
+            {
+                httpClient.print(String("GET ") + url.path + " HTTP/1.1\r\n" + "Host: " + url.host +
+                                 "\r\n" + "Connection: close\r\n\r\n");
+                currentInputStream = &httpClient;
+                Console::info("%s has been loaded.", urlString.c_str());
+                return true;
+            }
+        }
+        else
+        {
+            Console::error("Invalid protocol. Currently we only support HTTP protocol.");
         }
     }
     else
