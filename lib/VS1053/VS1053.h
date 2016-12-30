@@ -1,3 +1,6 @@
+#ifndef VS1053_H
+#define VS1053_H
+
 #include <Arduino.h>
 #include <SPI.h>
 
@@ -96,3 +99,5 @@ class VS1053
       return ( digitalRead ( dreq_pin ) == HIGH ) ;
     }
 };
+
+#endif

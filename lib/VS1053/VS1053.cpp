@@ -1,8 +1,6 @@
-#ifndef VS1053_CPP
-#define VS1053_CPP
+#include "VS1053.h"
 
 #include <Console.h>
-#include "VS1053.h"
 
 VS1053::VS1053(uint8_t _cs_pin, uint8_t _dcs_pin, uint8_t _dreq_pin)
     : cs_pin(_cs_pin), dcs_pin(_dcs_pin), dreq_pin(_dreq_pin)
@@ -268,4 +266,3 @@ void VS1053::printDetails(const char *header)
         Console::info("%3X - %5X", i, regbuf[i]);
     }
 }
-#endif
