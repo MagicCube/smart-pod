@@ -68,9 +68,14 @@ void setup()
     SPIFFS.begin();
 
     log("Setting up WiFi...");
-    setupWiFi();
-    // log("Setting up OTA...");
-    // ArduinoOTA.begin();
+    bool wifiConnected = setupWiFi();
+    if (!wifiConnected)
+    {
+        return;
+    }
+
+    log("Setting up OTA...");
+    ArduinoOTA.begin();
 
     // Setup VS1053
     SPI.begin();
@@ -88,7 +93,7 @@ void setup()
 void loop()
 {
     // Handling OTA request
-    // ArduinoOTA.handle();
+    ArduinoOTA.handle();
 
     // ****** READING FROM INPUT STREAM *******
     // When currentInputStream has been assigned
@@ -108,6 +113,10 @@ void loop()
 bool setupWiFi()
 {
     WiFi.mode(WIFI_STA);
+
+    // Auto scan WiFi connection
+    String prefSSID = "none";
+    String prefPassword;
     log("Scanning WiFi...");
     int ssidCount = WiFi.scanNetworks();
     if (ssidCount == -1)
@@ -115,41 +124,37 @@ bool setupWiFi()
         log("Couldn't get a WiFi connection.");
         return false;
     }
-
-    String WIFI_SSID = "none";
-    String WIFI_PWD;
     for (int i = 0; i < ssidCount; i++)
     {
         String ssid = WiFi.SSID(i);
         if (ssid.equals("Henry's Living Room 2.4GHz"))
         {
-            WIFI_SSID = ssid;
-            WIFI_PWD = "13913954971";
+            prefSSID = ssid;
+            prefPassword = "13913954971";
             break;
         }
         else if (ssid.equals("Henry's TP-LINK"))
         {
-            WIFI_SSID = ssid;
-            WIFI_PWD = "13913954971";
+            prefSSID = ssid;
+            prefPassword = "13913954971";
             break;
         }
         else if (ssid.equals("Henry's iPhone 6"))
         {
-            WIFI_SSID = ssid;
-            WIFI_PWD = "13913954971";
+            prefSSID = ssid;
+            prefPassword = "13913954971";
             // Don't break, cause this will connect to 4G network.
             // It's absolutely not a first choise.
         }
     }
-    if (WIFI_SSID.equals("none"))
+    if (prefSSID.equals("none"))
     {
         log("Couldn't find a recognized WiFi connection.");
         return false;
     }
-
-    WiFi.begin(WIFI_SSID.c_str(), WIFI_PWD.c_str());
+    WiFi.begin(prefSSID.c_str(), prefPassword.c_str());
     Serial.print("<i> Connecting to ");
-    Serial.print(WIFI_SSID);
+    Serial.print(prefSSID);
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
