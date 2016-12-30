@@ -12,6 +12,11 @@ char *Console::appendEntry(ConsoleLogLevel level, char *message)
     {
         switch (level)
         {
+            case DEBUG:
+                Serial.print("[DBG]");
+                Serial.print(" ");
+                Serial.println(message);
+                break;
             case INFO:
                 Serial.print("[INF]");
                 Serial.print(" ");
@@ -29,9 +34,35 @@ char *Console::appendEntry(ConsoleLogLevel level, char *message)
                 Serial.print(message);
                 Serial.println(" << ");
                 break;
+            case FATAL:
+                Serial.println();
+                Serial.println("=============================== [FATAL] ===============================");
+                Serial.println(message);
+                Serial.println();
+                break;
         }
     }
     return message;
+}
+
+
+
+void Console::line()
+{
+    if (INFO >= Console::logLevel)
+    {
+        Serial.println("--------------------------------------------------------------------------------");
+    }
+}
+
+char *Console::debug(const char *format, ...)
+{
+    static char sbuf[DEBUG_BUFFER_SIZE];
+    va_list varArgs;
+    va_start(varArgs, format);
+    vsnprintf(sbuf, sizeof(sbuf), format, varArgs);
+    va_end(varArgs);
+    return appendEntry(DEBUG, sbuf);
 }
 
 char *Console::info(const char *format, ...)
@@ -52,18 +83,8 @@ char *Console::warn(const char *format, ...)
     va_start(varArgs, format);
     vsnprintf(sbuf, sizeof(sbuf), format, varArgs);
     va_end(varArgs);
-
     return appendEntry(WARN, sbuf);
 }
-
-void Console::line()
-{
-    if (INFO >= Console::logLevel)
-    {
-        Serial.println("--------------------------------------------------------------------------------");
-    }
-}
-
 
 char *Console::error(const char *format, ...)
 {
@@ -72,6 +93,15 @@ char *Console::error(const char *format, ...)
     va_start(varArgs, format);
     vsnprintf(sbuf, sizeof(sbuf), format, varArgs);
     va_end(varArgs);
-
     return appendEntry(ERROR, sbuf);
+}
+
+char *Console::fatal(const char *format, ...)
+{
+    static char sbuf[DEBUG_BUFFER_SIZE];
+    va_list varArgs;
+    va_start(varArgs, format);
+    vsnprintf(sbuf, sizeof(sbuf), format, varArgs);
+    va_end(varArgs);
+    return appendEntry(FATAL, sbuf);
 }

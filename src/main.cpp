@@ -58,7 +58,7 @@ void setup()
 {
     Console::begin();
     Console::line();
-    Console::info("smart-radio is now starting...");
+    Console::info("SmartRadio is now starting...");
 
     // Set to 160 MHz in order to get better I/O performance
     // With ESP8266 running at 80 MHz, it is capable of handling up to 256 kb bitrate.
@@ -75,7 +75,7 @@ void setup()
     bool wifiConnected = setupWiFi();
     if (!wifiConnected)
     {
-        Console::error("smart-radio failed to start up.");
+        Console::fatal("SmartRadio failed to start up.");
         return;
     }
 
@@ -87,13 +87,13 @@ void setup()
     bool vs1053Enabled = vs1053.begin();
     if (!vs1053Enabled)
     {
-        Console::error("smart-radio failed to start up.");
+        Console::fatal("SmartRadio failed to start up.");
         return;
     }
     // Set the initial volume
     vs1053.setVolume(70);
 
-    Console::info("smart-radio is now running...");
+    Console::info("SmartRadio is now running...");
 
     // playLocalFile("/test.mp3");
     playRemoteUrl("http://lhttp.qingting.fm/live/387/64k.mp3");

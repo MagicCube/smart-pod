@@ -7,20 +7,25 @@
 
 enum ConsoleLogLevel
 {
+    DEBUG,
     INFO,
     WARN,
     ERROR,
+    FATAL,
     NONE
 };
 
 class Console
 {
 public:
+    static const ConsoleLogLevel logLevel = DEBUG;
+
     static void begin(int baudRate = 115200);
-    static const ConsoleLogLevel logLevel = INFO;
+    static char *debug(const char *format, ...);
     static char *info(const char *format, ...);
     static char *warn(const char *format, ...);
     static char *error(const char *format, ...);
+    static char *fatal(const char *format, ...);
     static void line();
 
 private:
