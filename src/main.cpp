@@ -75,7 +75,7 @@ void setup()
     bool wifiConnected = setupWiFi();
     if (!wifiConnected)
     {
-        Console::fatal("SmartRadio failed to start up.");
+        Console::fatal("SmartRadio failed to start up.\nReason: No WiFi Connection.");
         return;
     }
 
@@ -87,7 +87,7 @@ void setup()
     bool vs1053Enabled = vs1053.begin();
     if (!vs1053Enabled)
     {
-        Console::fatal("SmartRadio failed to start up.");
+        Console::fatal("SmartRadio failed to start up.\nReason: VS1053 can not be started.");
         return;
     }
     // Set the initial volume
