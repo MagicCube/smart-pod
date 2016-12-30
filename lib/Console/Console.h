@@ -7,7 +7,6 @@
 
 enum ConsoleLogLevel
 {
-    DEBUG,
     INFO,
     WARN,
     ERROR,
@@ -17,10 +16,13 @@ enum ConsoleLogLevel
 class Console
 {
 public:
-    static const ConsoleLogLevel logLevel = DEBUG;
+    static const ConsoleLogLevel logLevel = INFO;
     static char *info(const char *format, ...);
     static char *warn(const char *format, ...);
     static char *error(const char *format, ...);
+
+private:
+    static char *appendEntry(ConsoleLogLevel level, char *message);
 };
 
 #endif

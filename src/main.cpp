@@ -164,8 +164,7 @@ bool setupWiFi()
         return false;
     }
     WiFi.begin(prefSSID.c_str(), prefPassword.c_str());
-    Serial.print("<i> Connecting to ");
-    Serial.print(prefSSID);
+    Console::info("Connecting to %s", prefSSID.c_str());
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
