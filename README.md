@@ -35,3 +35,20 @@ An ESP8266 and VS1053 driven WebRadio and Internet music player.
   > Less than **US$7** on AliExpress.
 
   ![](http://img.dxcdn.com/productimages/sku_221526_1.jpg)
+
+
+## Wiring
+| ESP8266 / ESP-12 | Wired to VS1053 | Wired to Rest |
+| ---------------- | --------------- | ------------- |
+| D0               | XDCS            |               |
+| D1               | XCS             |               |
+| D2               | DREQ            |               |
+| D3               |                 |               |
+| D4               |                 |               |
+| D5               | SCLK            |               |
+| D6               | MISO            |               |
+| D7               | MOSI            |               |
+| D8               |                 |               |
+| D9               |                 |               |
+| D10              |                 |               |
+| RST              | XRST            |               |
