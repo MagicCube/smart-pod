@@ -15,8 +15,8 @@
 #include <VS1053.h>
 #include <log.h>
 
-#include "./stream/MediaInputBuffer.h"
-#include "./stream/MediaOutputBuffer.h"
+#include "./media/MediaOutputBuffer.h"
+#include "./stream/GeneralInputBuffer.h"
 #include "./util/URLParser.h"
 
 extern "C" {
@@ -34,15 +34,14 @@ extern "C" {
 VS1053 vs1053(VS1053_CS_PIN, VS1053_DCS_PIN, VS1053_DREQ_PIN);
 WiFiClient httpClient;
 
-// Buffer for input stream from file or network
-MediaInputBuffer mediaInputBuffer;
-// Buffer for output stream to VS1053
-MediaOutputBuffer mediaOutputBuffer(&vs1053);
-
-// mediaInputStream could be pointed to a FileInputStream or NetworkInputStream
-Stream *mediaInputStream = NULL;
+// currentInputStream could be pointed to a FileInputStream or NetworkInputStream
+Stream *currentInputStream = NULL;
 File fileInputStream; // Input stream for local files.
 
+// Buffer for input stream from file or network
+GeneralInputBuffer generalInputBuffer;
+// Buffer for output stream to VS1053
+MediaOutputBuffer mediaOutputBuffer(&vs1053);
 
 // Function Declarations
 bool setupWiFi();
@@ -83,7 +82,7 @@ void setup()
 
     // playLocalFile("/test.mp3");
     playRemoteUrl("http://lhttp.qingting.fm/live/387/64k.mp3");
-    //playRemoteUrl("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
+    // playRemoteUrl("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
 }
 
 void loop()
@@ -92,16 +91,16 @@ void loop()
     // ArduinoOTA.handle();
 
     // ****** READING FROM INPUT STREAM *******
-    // When mediaInputStream has been assigned
-    if (mediaInputStream)
+    // When currentInputStream has been assigned
+    if (currentInputStream)
     {
-        mediaInputBuffer.readFromStream(mediaInputStream);
+        generalInputBuffer.readFromStream(currentInputStream);
     }
 
     // ********* KEEP VS1053 FILLED **********
-    while (vs1053.data_request() && mediaInputBuffer.available())
+    while (vs1053.data_request() && generalInputBuffer.available())
     {
-        mediaOutputBuffer.write(mediaInputBuffer.read());
+        mediaOutputBuffer.write(generalInputBuffer.read());
     }
 }
 
@@ -170,7 +169,7 @@ bool playLocalFile(String path)
         log("Error opening file %s", path.c_str()); // No luck
         return false;
     }
-    mediaInputStream = &fileInputStream;
+    currentInputStream = &fileInputStream;
     log("%s has been loaded.", path.c_str());
     return true;
 }
@@ -185,7 +184,7 @@ bool playRemoteUrl(String urlString)
         {
             httpClient.print(String("GET ") + url.path + " HTTP/1.1\r\n" + "Host: " + url.host +
                              "\r\n" + "Connection: close\r\n\r\n");
-            mediaInputStream = &httpClient;
+            currentInputStream = &httpClient;
             log("%s has been loaded.", urlString.c_str());
             return true;
         }

@@ -1,12 +1,12 @@
-#ifndef MEDIA_INPUT_BUFFER_H
-#define MEDIA_INPUT_BUFFER_H
+#ifndef INPUT_STREAM_BUFFER_H
+#define INPUT_STREAM_BUFFER_H
 
 #include <Arduino.h>
 
-class MediaInputBuffer
+class GeneralInputBuffer
 {
   public:
-    MediaInputBuffer(int bufferSize = 18000);
+    GeneralInputBuffer(int bufferSize = 18000);
     bool canWrite();
     int available();
     void write(uint8_t byte);
