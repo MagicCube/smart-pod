@@ -1,7 +1,7 @@
 #ifndef VS1053_CPP
 #define VS1053_CPP
 
-#include <log.h>
+#include <Console.h>
 #include "VS1053.h"
 
 VS1053::VS1053(uint8_t _cs_pin, uint8_t _dcs_pin, uint8_t _dreq_pin)
@@ -100,7 +100,7 @@ bool VS1053::testComm(const char *header)
 
     if (!digitalRead(dreq_pin))
     {
-        log("VS1053 not properly installed!");
+        Console::error("VS1053 not properly installed!");
         // Allow testing without the VS1053 module
         pinMode(dreq_pin, INPUT_PULLUP); // DREQ is now input with pull-up
         return false;                    // Return bad result
@@ -113,7 +113,7 @@ bool VS1053::testComm(const char *header)
     {
         delta = 3; // Fast SPI, more loops
     }
-    log(header); // Show a header
+    Console::info(header); // Show a header
     for (i = 0; (i < 0xFFFF) && (cnt < 20); i += delta)
     {
         write_register(SCI_VOL, i);         // Write data to SCI_VOL
@@ -121,7 +121,7 @@ bool VS1053::testComm(const char *header)
         r2 = read_register(SCI_VOL);        // Read back a second time
         if (r1 != r2 || i != r1 || i != r2) // Check for 2 equal reads
         {
-            log("VS1053 error retry SB:%04X R1:%04X R2:%04X", i, r1, r2);
+            Console::error("VS1053 error retry SB:%04X R1:%04X R2:%04X", i, r1, r2);
             cnt++;
             delay(10);
         }
@@ -139,11 +139,11 @@ bool VS1053::begin()
     digitalWrite(dcs_pin, HIGH); // Start HIGH for SCI en SDI
     digitalWrite(cs_pin, HIGH);
     delay(100);
-    log("Reset VS1053...");
+    Console::info("Reset VS1053...");
     digitalWrite(dcs_pin, LOW); // Low & Low will bring reset pin low
     digitalWrite(cs_pin, LOW);
     delay(500);
-    log("End reset VS1053...");
+    Console::info("End reset VS1053...");
     digitalWrite(dcs_pin, HIGH); // Back to normal again
     digitalWrite(cs_pin, HIGH);
     delay(500);
@@ -171,7 +171,7 @@ bool VS1053::begin()
     delay(10);
     await_data_request();
     endFillByte = wram_read(0x1E06) & 0xFF;
-    log("endFillByte is %X", endFillByte);
+    Console::info("endFillByte is %X", endFillByte);
     // printDetails ( "After last clocksetting" ) ;
     delay(100);
     return result;
@@ -235,7 +235,7 @@ void VS1053::stopSong()
         if ((modereg & _BV(SM_CANCEL)) == 0)
         {
             sdi_send_fillers(2052);
-            log("Song stopped correctly after %d msec", i * 10);
+            Console::info("Song stopped correctly after %d msec", i * 10);
             return;
         }
         delay(10);
@@ -255,9 +255,9 @@ void VS1053::printDetails(const char *header)
     uint16_t regbuf[16];
     uint8_t i;
 
-    log(header);
-    log("REG   Contents");
-    log("---   -----");
+    Console::info(header);
+    Console::info("REG   Contents");
+    Console::info("---   -----");
     for (i = 0; i <= SCI_num_registers; i++)
     {
         regbuf[i] = read_register(i);
@@ -265,7 +265,7 @@ void VS1053::printDetails(const char *header)
     for (i = 0; i <= SCI_num_registers; i++)
     {
         delay(5);
-        log("%3X - %5X", i, regbuf[i]);
+        Console::info("%3X - %5X", i, regbuf[i]);
     }
 }
 #endif

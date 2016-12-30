@@ -13,7 +13,7 @@
 #include <ESP8266mDNS.h>
 
 #include <VS1053.h>
-#include <log.h>
+#include <Console.h>
 
 #include "./media/MediaOutputBuffer.h"
 #include "./stream/GeneralInputBuffer.h"
@@ -54,28 +54,28 @@ void setup()
     Serial.begin(115200);
 
     Serial.println("\n\n");
-    log("smart-radio is now starting...");
+    Console::info("smart-radio is now starting...");
 
     // Set to 160 MHz in order to get better I/O performance
     // With ESP8266 running at 80 MHz, it is capable of handling up to 256 kb bitrate.
     // With ESP8266 running at 160 MHz, it is capable of handling up to 320 kb bitrate.
-    log("Setting CPU frequency to 160Mhz...");
+    Console::info("Setting CPU frequency to 160Mhz...");
     system_update_cpu_freq(80);
 
     // Here we use SPIFFS(ESP8266 built-in File System) to store stations and other settings,
     // as well as short sound effects.
-    log("Setting up file system....");
+    Console::info("Setting up file system....");
     SPIFFS.begin();
 
-    log("Setting up WiFi...");
+    Console::info("Setting up WiFi...");
     bool wifiConnected = setupWiFi();
     if (!wifiConnected)
     {
-        log("smart-radio failed to start up.");
+        Console::error("smart-radio failed to start up.");
         return;
     }
 
-    log("Setting up OTA...");
+    Console::info("Setting up OTA...");
     ArduinoOTA.begin();
 
     // Setup VS1053
@@ -83,13 +83,13 @@ void setup()
     bool vs1053Enabled = vs1053.begin();
     if (!vs1053Enabled)
     {
-        log("smart-radio failed to start up.");
+        Console::error("smart-radio failed to start up.");
         return;
     }
     // Set the initial volume
     vs1053.setVolume(70);
 
-    log("smart-radio is now running...");
+    Console::info("smart-radio is now running...");
 
     // playLocalFile("/test.mp3");
     playRemoteUrl("http://lhttp.qingting.fm/live/387/64k.mp3");
@@ -123,11 +123,11 @@ bool setupWiFi()
     // Auto scan WiFi connection
     String prefSSID = "none";
     String prefPassword;
-    log("Scanning WiFi...");
+    Console::info("Scanning WiFi...");
     int ssidCount = WiFi.scanNetworks();
     if (ssidCount == -1)
     {
-        log("Couldn't get a WiFi connection.");
+        Console::error("Couldn't get a WiFi connection.");
         return false;
     }
     for (int i = 0; i < ssidCount; i++)
@@ -155,7 +155,7 @@ bool setupWiFi()
     }
     if (prefSSID.equals("none"))
     {
-        log("Couldn't find a recognized WiFi connection.");
+        Console::error("Couldn't find a recognized WiFi connection.");
         return false;
     }
     WiFi.begin(prefSSID.c_str(), prefPassword.c_str());
@@ -167,27 +167,27 @@ bool setupWiFi()
         Serial.print(".");
     }
     Serial.println("");
-    log("Got IP: %s", WiFi.localIP().toString().c_str());
+    Console::info("Got IP: %s", WiFi.localIP().toString().c_str());
     return true;
 }
 
 bool playLocalFile(String path)
 {
-    log("Loading %s...", path.c_str());
+    Console::info("Loading %s...", path.c_str());
     fileInputStream = SPIFFS.open(path, "r"); // Open the file
     if (!fileInputStream)
     {
-        log("Error opening file %s", path.c_str()); // No luck
+        Console::info("Error opening file %s", path.c_str()); // No luck
         return false;
     }
     currentInputStream = &fileInputStream;
-    log("%s has been loaded.", path.c_str());
+    Console::info("%s has been loaded.", path.c_str());
     return true;
 }
 
 bool playRemoteUrl(String urlString)
 {
-    log("Loading %s...", urlString.c_str());
+    Console::info("Loading %s...", urlString.c_str());
     URL url = parseURL(urlString);
     if (url.isValid)
     {
@@ -196,13 +196,13 @@ bool playRemoteUrl(String urlString)
             httpClient.print(String("GET ") + url.path + " HTTP/1.1\r\n" + "Host: " + url.host +
                              "\r\n" + "Connection: close\r\n\r\n");
             currentInputStream = &httpClient;
-            log("%s has been loaded.", urlString.c_str());
+            Console::info("%s has been loaded.", urlString.c_str());
             return true;
         }
     }
     else
     {
-        log("Invalid URL.");
+        Console::error("Invalid URL.");
     }
     return false;
 }

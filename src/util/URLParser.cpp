@@ -1,6 +1,6 @@
 #include "URLParser.h"
 
-#include <log.h>
+#include <Console.h>
 #include "URL.h"
 
 URL parseURL(String url)
@@ -16,7 +16,7 @@ URL parseURL(String url)
     result.protocol = url.substring(0, index);
     if (!result.protocol.equals("http"))
     {
-        log("Currently we only support HTTP protocol.");
+        Console::warn("Currently we only support HTTP protocol.");
         return result;
     }
     url.remove(0, (index + 3)); // remove http:// or https://
