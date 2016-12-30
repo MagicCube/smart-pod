@@ -71,6 +71,7 @@ void setup()
     bool wifiConnected = setupWiFi();
     if (!wifiConnected)
     {
+        log("smart-radio failed to start up.");
         return;
     }
 
@@ -79,7 +80,12 @@ void setup()
 
     // Setup VS1053
     SPI.begin();
-    vs1053.begin();
+    bool vs1053Enabled = vs1053.begin();
+    if (!vs1053Enabled)
+    {
+        log("smart-radio failed to start up.");
+        return;
+    }
     // Set the initial volume
     vs1053.setVolume(70);
 

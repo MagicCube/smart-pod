@@ -130,8 +130,9 @@ bool VS1053::testComm(const char *header)
     return (cnt == 0); // Return the result
 }
 
-void VS1053::begin()
+bool VS1053::begin()
 {
+    bool result = false;
     pinMode(dreq_pin, INPUT); // DREQ is an input
     pinMode(cs_pin, OUTPUT);  // The SCI and SDI signals
     pinMode(dcs_pin, OUTPUT);
@@ -151,7 +152,7 @@ void VS1053::begin()
     // printDetails ( "Right after reset/startup" ) ;
     delay(20);
     // printDetails ( "20 msec after reset" ) ;
-    testComm("Slow SPI,Testing VS1053 read/write registers...");
+    result = testComm("Slow SPI,Testing VS1053 read/write registers...");
     // Most VS1053 modules will start up in midi mode.  The result is that there is no audio
     // when playing MP3.  You can modify the board, but there is a more elegant way:
     wram_write(0xC017, 3); // GPIO DDR = 3
@@ -166,13 +167,14 @@ void VS1053::begin()
     // SPI Clock to 4 MHz. Now you can set high speed SPI clock.
     VS1053_SPI = SPISettings(4000000, MSBFIRST, SPI_MODE0);
     write_register(SCI_MODE, _BV(SM_SDINEW) | _BV(SM_LINE1));
-    testComm("Fast SPI, Testing VS1053 read/write registers again...");
+    result = testComm("Fast SPI, Testing VS1053 read/write registers again...");
     delay(10);
     await_data_request();
     endFillByte = wram_read(0x1E06) & 0xFF;
     log("endFillByte is %X", endFillByte);
     // printDetails ( "After last clocksetting" ) ;
     delay(100);
+    return result;
 }
 
 void VS1053::setVolume(uint8_t vol)
