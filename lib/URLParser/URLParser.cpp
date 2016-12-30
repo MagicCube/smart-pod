@@ -1,6 +1,5 @@
 #include "URLParser.h"
 
-#include <Console.h>
 #include "URL.h"
 
 URL parseURL(String url)
@@ -14,11 +13,6 @@ URL parseURL(String url)
     }
 
     result.protocol = url.substring(0, index);
-    if (!result.protocol.equals("http"))
-    {
-        Console::warn("Currently we only support HTTP protocol.");
-        return result;
-    }
     url.remove(0, (index + 3)); // remove http:// or https://
 
     index = url.indexOf('/');
@@ -40,7 +34,14 @@ URL parseURL(String url)
     }
     if (!hasPort)
     {
-        result.port = 80;
+        if (result.protocol.equals("http"))
+        {
+            result.port = 80;
+        }
+        else if (result.protocol.equals("https"))
+        {
+            result.port = 443;
+        }
     }
 
     result.path = url;
