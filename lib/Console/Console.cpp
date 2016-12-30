@@ -1,5 +1,11 @@
 #include "Console.h"
 
+void Console::begin(int baudRate)
+{
+    Serial.begin(baudRate);
+    Serial.println("\n\n");
+}
+
 char *Console::appendEntry(ConsoleLogLevel level, char *message)
 {
     if (level >= Console::logLevel)
@@ -49,6 +55,15 @@ char *Console::warn(const char *format, ...)
 
     return appendEntry(WARN, sbuf);
 }
+
+void Console::line()
+{
+    if (INFO >= Console::logLevel)
+    {
+        Serial.println("--------------------------------------------------------------------------------");
+    }
+}
+
 
 char *Console::error(const char *format, ...)
 {

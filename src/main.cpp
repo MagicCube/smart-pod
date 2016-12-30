@@ -56,16 +56,15 @@ bool playRemoteUrl(String url);
 
 void setup()
 {
-    Serial.begin(115200);
-
-    Serial.println("\n\n");
+    Console::begin();
+    Console::line();
     Console::info("smart-radio is now starting...");
 
     // Set to 160 MHz in order to get better I/O performance
     // With ESP8266 running at 80 MHz, it is capable of handling up to 256 kb bitrate.
     // With ESP8266 running at 160 MHz, it is capable of handling up to 320 kb bitrate.
     Console::info("Setting CPU frequency to 160Mhz...");
-    system_update_cpu_freq(80);
+    system_update_cpu_freq(85);
 
     // Here we use SPIFFS(ESP8266 built-in File System) to store stations and other settings,
     // as well as short sound effects.
@@ -164,7 +163,7 @@ bool setupWiFi()
         return false;
     }
     WiFi.begin(prefSSID.c_str(), prefPassword.c_str());
-    Console::info("Connecting to %s", prefSSID.c_str());
+    Console::info("Connecting to \"%s\"", prefSSID.c_str());
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);

@@ -16,10 +16,12 @@ enum ConsoleLogLevel
 class Console
 {
 public:
+    static void begin(int baudRate = 115200);
     static const ConsoleLogLevel logLevel = INFO;
     static char *info(const char *format, ...);
     static char *warn(const char *format, ...);
     static char *error(const char *format, ...);
+    static void line();
 
 private:
     static char *appendEntry(ConsoleLogLevel level, char *message);
