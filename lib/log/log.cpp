@@ -10,13 +10,8 @@ char *log(const char *format, ...)
     va_end(varArgs);                                // End of using parameters
     if (DEBUG)                                      // DEBUG on?
     {
-        Serial.print("> ");  // Yes, print prefix
+        Serial.print("<i> ");  // Yes, print prefix
         Serial.println(sbuf); // and the info
     }
     return sbuf; // Return stored string
-}
-
-char *log(String message)
-{
-    return log(message.c_str());
 }
