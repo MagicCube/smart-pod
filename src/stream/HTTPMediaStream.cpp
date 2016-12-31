@@ -88,7 +88,7 @@ int HTTPMediaStream::totalSize()
 }
 
 
-int parseHex(const char *str)
+int __parseHex(const char *str)
 {
   return (int) strtol(str, 0, 16);
 }
@@ -97,10 +97,10 @@ void HTTPMediaStream::_readChunkSize()
 {
     // plus the last chunkSize
     String chunkSizeStr = _httpStream->readStringUntil('\n');
-    _chunkSize = parseHex(chunkSizeStr.c_str());
+    _chunkSize = __parseHex(chunkSizeStr.c_str());
     _chunkIndex = -1;
     _totalSize += _chunkSize;
-    
+
     //Console::debug("Chunk size in hex: %s", chunkSizeStr.c_str());
     //Console::debug("Chunk size: %d", _chunkSize);
 }
