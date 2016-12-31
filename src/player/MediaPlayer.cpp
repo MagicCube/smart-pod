@@ -3,9 +3,6 @@
 #include <Console.h>
 #include <URLParser.h>
 
-#include "../stream/LocalMediaStream.h"
-#include "../stream/HTTPMediaStream.h"
-
 MediaPlayer::MediaPlayer(VS1053 *vs1053)
 {
     _vs1053 = vs1053;
@@ -15,7 +12,12 @@ bool MediaPlayer::open(String location)
 {
     if (location.startsWith("/"))
     {
-        _mediaStream = new LocalMediaStream(location);
+        if (!_localMediaStream)
+        {
+            _localMediaStream = new LocalMediaStream();
+        }
+        _mediaStream = _localMediaStream;
+        _mediaStream->open(location);
     }
     else
     {
@@ -24,7 +26,12 @@ bool MediaPlayer::open(String location)
         {
             if (url.protocol.equalsIgnoreCase("http"))
             {
-                _mediaStream = new HTTPMediaStream(location);
+                if (!_httpMediaStream)
+                {
+                    _httpMediaStream = new HTTPMediaStream();
+                }
+                _mediaStream = _httpMediaStream;
+                _mediaStream->open(location);
             }
             else
             {

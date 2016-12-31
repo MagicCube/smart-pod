@@ -6,6 +6,8 @@
 #include <VS1053.h>
 
 #include "../stream/MediaStream.h"
+#include "../stream/LocalMediaStream.h"
+#include "../stream/HTTPMediaStream.h"
 
 #define MEDIA_PLAYER_BUFFER_SIZE 32
 
@@ -19,6 +21,8 @@ public:
 
 protected:
     VS1053* _vs1053;
+    LocalMediaStream* _localMediaStream;
+    HTTPMediaStream* _httpMediaStream;
     MediaStream* _mediaStream;
 
     void _handleMediaStream();

@@ -8,15 +8,17 @@ class MediaStream : public Stream
 {
 public:
     bool isValid();
+    bool isClosed();
     size_t write(uint8_t byte) override;
+
+    virtual bool open(String location) = 0;
+    virtual void close() = 0;
 
     virtual int totalSize() = 0;
 
 protected:
-    void setValid(bool valid);
-
-private:
     bool _valid = false;
+    bool _closed = true;
 };
 
 

@@ -10,7 +10,9 @@
 class LocalMediaStream : public MediaStream
 {
   public:
-    LocalMediaStream(String path);
+    LocalMediaStream();
+    bool open(String path) override;
+    void close();
     int available() override;
     int read() override;
     int peek() override;
@@ -20,6 +22,7 @@ class LocalMediaStream : public MediaStream
 
   private:
     File _fileStream;
+    int _totalSize = 0;
 };
 
 #endif

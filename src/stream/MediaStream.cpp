@@ -11,7 +11,7 @@ bool MediaStream::isValid()
     return _valid;
 }
 
-void MediaStream::setValid(bool valid)
+bool MediaStream::isClosed()
 {
-    _valid = valid;
+    return _closed;
 }

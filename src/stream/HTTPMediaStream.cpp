@@ -2,14 +2,21 @@
 
 #include "HTTPMediaStream.h"
 
-HTTPMediaStream::HTTPMediaStream(String url)
+HTTPMediaStream::HTTPMediaStream()
+{
+
+}
+
+bool HTTPMediaStream::open(String url)
 {
     Console::info("Loading %s...", url.c_str());
     bool result = _httpClient.begin(url);
     if (!result)
     {
         Console::error("Can not open %s.", url.c_str());
-        setValid(false);
+        _valid = false;
+        _closed = true;
+        return false;
     }
     else
     {
@@ -34,52 +41,106 @@ HTTPMediaStream::HTTPMediaStream(String url)
 
                     _readChunkSize();
                 }
-                setValid(true);
+                _valid = true;
+                _closed = false;
+                return true;
             }
             else
             {
                 Console::error("%s can not be loaded.", url.c_str());
                 Console::error("The server response with HTTP code %d", httpCode);
-                setValid(false);
+                _valid = false;
+                _closed = true;
+                return false;
             }
         }
         else
         {
             Console::error("Can not open %s.", url.c_str());
-            setValid(false);
+            _valid = false;
+            _closed = true;
+            return false;
         }
     }
+}
+
+void HTTPMediaStream::close()
+{
+    if (!_closed)
+    {
+        _httpClient.end();
+        if (_httpStream)
+        {
+            _httpStream->flush();
+            _httpStream->stop();
+            while (_httpStream->connected())
+            {
+                _httpStream->flush();
+                _httpStream->stop();
+                delay(100);
+            }
+        }
+    }
+    _valid = false;
+    _closed = true;
+    _totalSize = 0;
+    _chunkSize = 0;
+    _chunkIndex = 0;
 }
 
 int HTTPMediaStream::available()
 {
-    return _httpStream->available();
+    if (!_closed)
+    {
+        return _httpStream->available();
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 int HTTPMediaStream::read()
 {
-    if (_httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
+    if (!_closed && _httpStream)
     {
-        _chunkIndex++;
-        if (_chunkIndex >= _chunkSize - 1 && _httpStream->peek() == '\r')
+        if (_httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
         {
-            _httpStream->read();
-            _httpStream->read();
-            _readChunkSize();
             _chunkIndex++;
+            if (_chunkIndex >= _chunkSize - 1 && _httpStream->peek() == '\r')
+            {
+                _httpStream->read();
+                _httpStream->read();
+                _readChunkSize();
+                _chunkIndex++;
+            }
         }
+        return _httpStream->read();
     }
-    return _httpStream->read();
+    else
+    {
+        return 0;
+    }
 }
 
 int HTTPMediaStream::peek()
 {
-    return _httpStream->peek();
+    if (!_closed && _httpStream)
+    {
+        return _httpStream->peek();
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 void HTTPMediaStream::flush()
 {
-    _httpStream->flush();
+    if (!_closed && _httpStream)
+    {
+        _httpStream->flush();
+    }
 }
 
 int HTTPMediaStream::totalSize()

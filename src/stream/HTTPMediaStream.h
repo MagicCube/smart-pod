@@ -9,7 +9,9 @@
 class HTTPMediaStream : public MediaStream
 {
   public:
-    HTTPMediaStream(String url);
+    HTTPMediaStream();
+    bool open(String url) override;
+    void close() override;
     int available() override;
     int read() override;
     int peek() override;
