@@ -24,26 +24,28 @@
 #include "./stream/GeneralInputBuffer.h"
 #include "./wifi/WiFiConnector.h"
 
+// You can find PIN wiring defininitions in "wiring.h"
+#include "./wiring.h"
+
 // In order to invoke system_update_cpu_freq(),
 // we have to include "user_interface.h".
 extern "C" {
 #include "user_interface.h"
 }
 
-// VS1053 Settings
-#define VS1053_CS_PIN D1
-#define VS1053_DCS_PIN D0
-#define VS1053_DREQ_PIN D2
+
+
+
+
 
 // Global Variables
 
 // Global Objects
-VS1053 vs1053(VS1053_CS_PIN, VS1053_DCS_PIN, VS1053_DREQ_PIN);
+VS1053 vs1053(VS1053_XCS_PIN, VS1053_XDCS_PIN, VS1053_DREQ_PIN);
 MediaPlayer mediaPlayer(&vs1053);
 
-// Function Declarations
-bool playLocalFile(String path);
-bool playRemoteUrl(String url);
+
+
 
 
 void setup()
@@ -53,16 +55,19 @@ void setup()
     Console::info("SmartRadio is now starting...");
 
 
-
+    // ** Setup CPU **
     // Set to 160 MHz in order to get better I/O performance
+    // Set to 80 MHz in order to save power
     // With ESP8266 running at 80 MHz, it is capable of handling up to 256 kb bitrate.
     // With ESP8266 running at 160 MHz, it is capable of handling up to 320 kb bitrate.
-    Console::info("Setting CPU frequency to 160Mhz...");
-    system_update_cpu_freq(80);
+    const int CPU_SPEED = 80;
+    Console::info("Setting CPU frequency to %d Mhz...", CPU_SPEED);
+    system_update_cpu_freq(CPU_SPEED);
 
 
 
 
+    // ** Setup File System **
     // Here we use SPIFFS(ESP8266 built-in File System) to store stations and other settings,
     // as well as short sound effects.
     Console::info("Setting up file system....");
@@ -71,7 +76,7 @@ void setup()
 
 
 
-    // Setup WiFi
+    // ** Setup WiFi **
     // According to my personal experiments, WiFi must be started before VS1053,
     // otherwise WiFi could not be well connected.
     // I don't know why, maybe can be solved in the future.
@@ -90,7 +95,7 @@ void setup()
 
 
 
-    // Setup VS1053
+    // ** Setup VS1053 **
     SPI.begin();
     bool mediaPlayerEnabled = mediaPlayer.begin();
     if (!mediaPlayerEnabled)

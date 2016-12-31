@@ -1,0 +1,4 @@
+// VS1053 Settings
+#define VS1053_XCS_PIN D1
+#define VS1053_XDCS_PIN D0
+#define VS1053_DREQ_PIN D2
