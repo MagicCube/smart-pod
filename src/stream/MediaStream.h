@@ -10,6 +10,8 @@ public:
     bool isValid();
     size_t write(uint8_t byte) override;
 
+    virtual size_t totalSize() = 0;
+
 protected:
     void setValid(bool valid);
 

@@ -15,7 +15,10 @@ class HTTPMediaStream : public MediaStream
     int peek() override;
     void flush() override;
 
+    size_t totalSize() override;
+
   private:
+    size_t _totalSize;
     HTTPClient2 httpClient;
     WiFiClient* httpStream;
 };

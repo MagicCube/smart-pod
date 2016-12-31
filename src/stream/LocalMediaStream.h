@@ -15,6 +15,8 @@ class LocalMediaStream : public MediaStream
     int read() override;
     int peek() override;
     void flush() override;
+    
+    size_t totalSize() override;
 
   private:
     File fileStream;

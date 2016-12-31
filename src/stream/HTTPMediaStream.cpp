@@ -20,14 +20,15 @@ HTTPMediaStream::HTTPMediaStream(String url)
             if (httpCode == HTTP_CODE_OK)
             {
                 Console::info("%s has been loaded.", url.c_str());
-                
+
                 if (httpClient.getTransferEncoding() == HTTPC_TE_IDENTITY)
                 {
-                    Console::debug("Content-length: %d", httpClient.getSize());
+                    _totalSize = httpClient.getSize();
                 }
                 else if (httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
                 {
                     Console::debug("Transfer-encoding: chunked");
+                    _totalSize = -1;
                 }
                 httpStream = httpClient.getStreamPtr();
                 setValid(true);
@@ -65,4 +66,9 @@ int HTTPMediaStream::peek()
 void HTTPMediaStream::flush()
 {
     httpStream->flush();
+}
+
+size_t HTTPMediaStream::totalSize()
+{
+    return _totalSize;
 }

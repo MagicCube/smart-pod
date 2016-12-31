@@ -38,3 +38,11 @@ void LocalMediaStream::flush()
 {
     fileStream.flush();
 }
+
+
+
+
+size_t LocalMediaStream::totalSize()
+{
+    return fileStream.size();
+}

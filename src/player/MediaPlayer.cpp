@@ -39,7 +39,15 @@ bool MediaPlayer::open(String location)
         }
     }
 
-    return mediaStream && mediaStream->isValid();
+    if (mediaStream && mediaStream->isValid())
+    {
+        Console::debug("File size: %d", mediaStream->totalSize());
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void MediaPlayer::handle()
