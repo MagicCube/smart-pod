@@ -3,13 +3,13 @@
 
 #include <Arduino.h>
 
-struct URL
+typedef struct
 {
     bool isValid = false;
     String protocol;
     String host;
     int port;
     String path;
-};
+} URL;
 
 #endif
