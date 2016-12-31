@@ -6,6 +6,7 @@
 
 void ButtonController::begin()
 {
+    pinMode(MIDDLE_BUTTON_PIN, INPUT);
     pinMode(RIGHT_BUTTON_PIN, INPUT_PULLUP);
     pinMode(LEFT_BUTTON_PIN, INPUT_PULLUP);
 }
@@ -14,7 +15,7 @@ void ButtonController::handle()
 {
     bool pressed;
 
-    pressed = analogRead(MIDDLE_BUTTON_PIN) > 1000;
+    pressed = digitalRead(MIDDLE_BUTTON_PIN) == HIGH;
     if (_middleButtonDown == 0)
     {
         // If the button has just been pressed.

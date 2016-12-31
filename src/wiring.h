@@ -6,4 +6,4 @@
 // Buttons
 #define LEFT_BUTTON_PIN D3
 #define RIGHT_BUTTON_PIN D4
-#define MIDDLE_BUTTON_PIN A0
+#define MIDDLE_BUTTON_PIN D8

@@ -48,8 +48,7 @@ An ESP8266 and VS1053 driven WebRadio and Internet music player.
 | D5               | SCLK   |               |             |              |
 | D6               | MISO   |               |             |              |
 | D7               | MOSI   |               |             |              |
-| D8               |        |               |             |              |
-| A0               |        | PIN1          |             |              |
+| D8               |        | PIN1          |             |              |
 | **RST**          | XRST   |               |             |              |
 | **5v**           | VCC    | PIN2          |             |              |
 | **GND**          | GND    |               | PIN2        | PIN2         |
