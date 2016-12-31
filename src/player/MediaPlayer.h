@@ -7,7 +7,7 @@
 
 #include "../stream/MediaStream.h"
 
-#define MEDIA_PLAYER_BUFFER_SIZE 128
+#define MEDIA_PLAYER_BUFFER_SIZE 32
 
 class MediaPlayer
 {
