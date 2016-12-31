@@ -8,10 +8,10 @@ size_t MediaStream::write(uint8_t byte)
 
 bool MediaStream::isValid()
 {
-    return valid;
+    return _valid;
 }
 
 void MediaStream::setValid(bool valid)
 {
-    this->valid = valid;
+    _valid = valid;
 }

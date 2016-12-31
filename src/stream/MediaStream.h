@@ -16,7 +16,7 @@ protected:
     void setValid(bool valid);
 
 private:
-    bool valid = false;
+    bool _valid = false;
 };
 
 

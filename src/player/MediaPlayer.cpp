@@ -8,14 +8,14 @@
 
 MediaPlayer::MediaPlayer(VS1053 *vs1053)
 {
-    this->vs1053 = vs1053;
+    _vs1053 = vs1053;
 }
 
 bool MediaPlayer::open(String location)
 {
     if (location.startsWith("/"))
     {
-        mediaStream = new LocalMediaStream(location);
+        _mediaStream = new LocalMediaStream(location);
     }
     else
     {
@@ -24,7 +24,7 @@ bool MediaPlayer::open(String location)
         {
             if (url.protocol.equalsIgnoreCase("http"))
             {
-                mediaStream = new HTTPMediaStream(location);
+                _mediaStream = new HTTPMediaStream(location);
             }
             else
             {
@@ -39,9 +39,9 @@ bool MediaPlayer::open(String location)
         }
     }
 
-    if (mediaStream && mediaStream->isValid())
+    if (_mediaStream && _mediaStream->isValid())
     {
-        Console::debug("File size: %d", mediaStream->totalSize());
+        Console::debug("File size: %d", _mediaStream->totalSize());
         return true;
     }
     else
@@ -55,9 +55,9 @@ void MediaPlayer::handle()
     static __attribute__((aligned(4))) char buffer[MEDIA_PLAYER_BUFFER_SIZE];
 
     // First we need to confirm whether VS1053 is enable to receive data.
-    if (vs1053->data_request())
+    if (_vs1053->data_request())
     {
-        size_t len = mediaStream->available();
+        size_t len = _mediaStream->available();
         if (len <= 0)
         {
             return;
@@ -70,7 +70,7 @@ void MediaPlayer::handle()
             len = MEDIA_PLAYER_BUFFER_SIZE;
         }
 
-        len = mediaStream->readBytes(buffer, len);
-        vs1053->playChunk((uint8 *)buffer, len);
+        len = _mediaStream->readBytes(buffer, len);
+        _vs1053->playChunk((uint8 *)buffer, len);
     }
 }

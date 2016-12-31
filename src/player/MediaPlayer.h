@@ -18,8 +18,8 @@ public:
     void handle();
 
 protected:
-    VS1053* vs1053;
-    MediaStream* mediaStream;
+    VS1053* _vs1053;
+    MediaStream* _mediaStream;
 };
 
 #endif

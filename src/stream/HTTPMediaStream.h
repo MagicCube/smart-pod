@@ -19,8 +19,8 @@ class HTTPMediaStream : public MediaStream
 
   private:
     size_t _totalSize;
-    HTTPClient2 httpClient;
-    WiFiClient* httpStream;
+    HTTPClient2 _httpClient;
+    WiFiClient* _httpStream;
 };
 
 #endif

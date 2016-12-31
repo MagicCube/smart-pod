@@ -5,7 +5,7 @@
 HTTPMediaStream::HTTPMediaStream(String url)
 {
     Console::info("Loading %s...", url.c_str());
-    bool result = httpClient.begin(url);
+    bool result = _httpClient.begin(url);
     if (!result)
     {
         Console::error("Can not open %s.", url.c_str());
@@ -13,24 +13,24 @@ HTTPMediaStream::HTTPMediaStream(String url)
     }
     else
     {
-        httpStream = httpClient.getStreamPtr();
-        int httpCode = httpClient.GET();
+        _httpStream = _httpClient.getStreamPtr();
+        int httpCode = _httpClient.GET();
         if (httpCode > 0)
         {
             if (httpCode == HTTP_CODE_OK)
             {
                 Console::info("%s has been loaded.", url.c_str());
 
-                if (httpClient.getTransferEncoding() == HTTPC_TE_IDENTITY)
+                if (_httpClient.getTransferEncoding() == HTTPC_TE_IDENTITY)
                 {
-                    _totalSize = httpClient.getSize();
+                    _totalSize = _httpClient.getSize();
                 }
-                else if (httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
+                else if (_httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
                 {
                     Console::debug("Transfer-encoding: chunked");
                     _totalSize = -1;
                 }
-                httpStream = httpClient.getStreamPtr();
+                _httpStream = _httpClient.getStreamPtr();
                 setValid(true);
             }
             else
@@ -50,22 +50,22 @@ HTTPMediaStream::HTTPMediaStream(String url)
 
 int HTTPMediaStream::available()
 {
-    return httpStream->available();
+    return _httpStream->available();
 }
 
 int HTTPMediaStream::read()
 {
-    return httpStream->read();
+    return _httpStream->read();
 }
 
 int HTTPMediaStream::peek()
 {
-    return httpStream->peek();
+    return _httpStream->peek();
 }
 
 void HTTPMediaStream::flush()
 {
-    httpStream->flush();
+    _httpStream->flush();
 }
 
 size_t HTTPMediaStream::totalSize()
