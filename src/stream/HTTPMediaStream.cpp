@@ -19,9 +19,13 @@ HTTPMediaStream::HTTPMediaStream(String url)
         {
             if (httpCode == HTTP_CODE_OK)
             {
-                if (httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
+                if (httpClient.getTransferEncoding() == HTTPC_TE_IDENTITY)
                 {
-                    Console::debug("[Chunked] transfer-encoding header was found.");
+                    Console::debug("Content-length: %d", httpClient.getSize());
+                }
+                else if (httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
+                {
+                    Console::debug("Transfer-encoding: chunked");
                 }
                 httpStream = httpClient.getStreamPtr();
                 Console::info("%s has been loaded.", url.c_str());
