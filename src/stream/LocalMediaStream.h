@@ -17,7 +17,7 @@ class LocalMediaStream : public MediaStream
     void flush() override;
 
   private:
-    File inputStream;
+    File fileStream;
 };
 
 #endif

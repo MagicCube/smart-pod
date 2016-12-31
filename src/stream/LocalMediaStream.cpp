@@ -5,32 +5,32 @@
 LocalMediaStream::LocalMediaStream(String path)
 {
     Console::info("Loading %s...", path.c_str());
-    inputStream = SPIFFS.open(path, "r"); // Open the file
-    if (!inputStream)
+    fileStream = SPIFFS.open(path, "r"); // Open the file
+    if (!fileStream)
     {
         Console::info("Error opening file %s", path.c_str()); // No luck
         return;
     }
     Console::info("%s has been loaded.", path.c_str());
-    Console::debug("File size: %d", inputStream.size());
+    Console::debug("File size: %d", fileStream.size());
 }
 
 int LocalMediaStream::available()
 {
-    return inputStream.available();
+    return fileStream.available();
 }
 
 int LocalMediaStream::read()
 {
-    return inputStream.read();
+    return fileStream.read();
 }
 
 int LocalMediaStream::peek()
 {
-    return inputStream.peek();
+    return fileStream.peek();
 }
 
 void LocalMediaStream::flush()
 {
-    inputStream.flush();
+    fileStream.flush();
 }
