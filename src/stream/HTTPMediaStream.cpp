@@ -29,7 +29,7 @@ HTTPMediaStream::HTTPMediaStream(String url)
                 else if (_httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
                 {
                     Console::debug("Transfer-encoding: chunked");
-                    _totalSize = -1;
+                    _totalSize = 0;
 
                     _readChunkSize();
                 }
@@ -57,13 +57,16 @@ int HTTPMediaStream::available()
 
 int HTTPMediaStream::read()
 {
-    _chunkIndex++;
-    if (_chunkIndex >= _chunkSize - 1 && _httpStream->peek() == '\r')
+    if (_httpClient.getTransferEncoding() == HTTPC_TE_CHUNKED)
     {
-        _httpStream->read();
-        _httpStream->read();
-        _readChunkSize();
         _chunkIndex++;
+        if (_chunkIndex >= _chunkSize - 1 && _httpStream->peek() == '\r')
+        {
+            _httpStream->read();
+            _httpStream->read();
+            _readChunkSize();
+            _chunkIndex++;
+        }
     }
     return _httpStream->read();
 }
@@ -94,6 +97,7 @@ void HTTPMediaStream::_readChunkSize()
     String chunkSizeStr = _httpStream->readStringUntil('\n');
     _chunkSize = parseHex(chunkSizeStr.c_str());
     _chunkIndex = -1;
+    _totalSize += _chunkSize;
     //Console::debug("Chunk size in hex: %s", chunkSizeStr.c_str());
     //Console::debug("Chunk size: %d", _chunkSize);
 }
