@@ -1,9 +1,10 @@
-#include "MediaPlayer.h"
-
+#include <fs.h>
 #include <VS1053.h>
 
 #include <Console.h>
 #include <URLParser.h>
+
+#include "MediaPlayer.h"
 
 MediaPlayer::MediaPlayer(VS1053 *vs1053) : mediaOutputBuffer(vs1053)
 {
@@ -19,7 +20,7 @@ bool MediaPlayer::begin()
     }
 
     // Set the initial volume
-    setVolume(70);
+    setVolume(85);
 
     return true;
 }
@@ -37,7 +38,8 @@ bool MediaPlayer::handle()
     // ********* KEEP VS1053 FILLED **********
     while (vs1053->data_request() && generalInputBuffer.available())
     {
-        mediaOutputBuffer.write(generalInputBuffer.read());
+        uint8_t byte = generalInputBuffer.read();
+        mediaOutputBuffer.write(byte);
     }
 
     return true;
@@ -60,6 +62,7 @@ bool MediaPlayer::loadLocalFile(String path)
     }
     currentInputStream = &fileInputStream;
     Console::info("%s has been loaded.", path.c_str());
+    Console::debug("File size: %d", fileInputStream.size());
     return true;
 }
 
@@ -73,8 +76,12 @@ bool MediaPlayer::loadRemoteURL(String urlString)
         {
             if (httpClient.connect(url.host.c_str(), url.port))
             {
-                httpClient.print(String("GET ") + url.path + " HTTP/1.1\r\n" + "Host: " + url.host +
-                                 "\r\n" + "Connection: close\r\n\r\n");
+                httpClient.print(
+                    String("GET ") +
+                    url.path +
+                    " HTTP/1.1\r\n" +
+                    "Host: " + url.host + "\r\n" +
+                    "Connection: keep-alive\r\n\r\n");
                 currentInputStream = &httpClient;
                 Console::info("%s has been loaded.", urlString.c_str());
                 return true;

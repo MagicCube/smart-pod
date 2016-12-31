@@ -54,7 +54,7 @@ void setup()
     // With ESP8266 running at 80 MHz, it is capable of handling up to 256 kb bitrate.
     // With ESP8266 running at 160 MHz, it is capable of handling up to 320 kb bitrate.
     Console::info("Setting CPU frequency to 160Mhz...");
-    system_update_cpu_freq(85);
+    system_update_cpu_freq(80);
 
     // Here we use SPIFFS(ESP8266 built-in File System) to store stations and other settings,
     // as well as short sound effects.
@@ -73,6 +73,7 @@ void setup()
     Console::info("Setting up OTA...");
     ArduinoOTA.begin();
 
+
     // Setup VS1053
     SPI.begin();
     bool mediaPlayerEnabled = mediaPlayer.begin();
@@ -84,9 +85,10 @@ void setup()
 
     Console::info("SmartRadio is now running...");
 
-    // mediaPlayer.loadLocalFile("/test.mp3");
-    mediaPlayer.loadRemoteURL("http://lhttp.qingting.fm/live/387/64k.mp3");
-    // mediaPlayer.loadRemoteURL("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
+    mediaPlayer.loadLocalFile("/record.mp3");
+    //mediaPlayer.loadRemoteURL("http://lhttp.qingting.fm/live/387/64k.mp3"); // NCR Finance
+    //mediaPlayer.loadRemoteURL("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
+    //mediaPlayer.loadRemoteURL("http://od.qingting.fm/vod/00/00/0000000000000000000026111078_24.m4a");
 }
 
 void loop()

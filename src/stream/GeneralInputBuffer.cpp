@@ -19,7 +19,7 @@ int GeneralInputBuffer::available()
 
 void GeneralInputBuffer::write(uint8_t byte)
 {
-    // No check on available space.  See ringspace()
+    // No check on available space.
     *(bytes + writeIndex) = byte; // Put byte in ringbuffer
     if (++writeIndex == size)     // Increment pointer and
     {
@@ -30,7 +30,7 @@ void GeneralInputBuffer::write(uint8_t byte)
 
 uint8_t GeneralInputBuffer::read()
 {
-    // Assume there is always something in the bufferpace.  See ringavail()
+    // Assume there is always something in the bufferpace.
     if (++readIndex == size) // Increment pointer and
     {
         readIndex = 0; // wrap at end
