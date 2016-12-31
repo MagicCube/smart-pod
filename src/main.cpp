@@ -101,7 +101,7 @@ void setup()
         return;
     }
     // Set the initial volume
-    vs1053.setVolume(100);
+    vs1053.setVolume(90);
 
 
 
@@ -114,7 +114,8 @@ void setup()
 
 
     //mediaPlayer.open("/test.mp3");
-    mediaPlayer.open("http://lhttp.qingting.fm/live/387/64k.mp3"); // NCR Finance
+    //mediaPlayer.open("http://lhttp.qingting.fm/live/387/64k.mp3"); // NCR Finance
+    mediaPlayer.open("http://http.qingting.fm/4963.mp3"); // Nanjing Music Radio
     //mediaPlayer.open("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
     //mediaPlayer.open("http://od.qingting.fm/vod/00/00/0000000000000000000026111078_24.m4a");
 }

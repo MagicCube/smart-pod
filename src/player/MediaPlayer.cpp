@@ -57,6 +57,8 @@ void MediaPlayer::handle()
 
 void MediaPlayer::_handleMediaStream()
 {
+    if (!_mediaStream) return;
+
     static __attribute__((aligned(4))) char buffer[MEDIA_PLAYER_BUFFER_SIZE];
 
     // First we need to confirm whether VS1053 is enable to receive data.
