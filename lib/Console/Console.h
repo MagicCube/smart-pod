@@ -5,7 +5,7 @@
 
 #define DEBUG_BUFFER_SIZE 100
 
-enum ConsoleLogLevel
+typedef enum
 {
     DEBUG,
     INFO,
@@ -13,7 +13,7 @@ enum ConsoleLogLevel
     ERROR,
     FATAL,
     NONE
-};
+} ConsoleLogLevel;
 
 class Console
 {
