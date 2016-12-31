@@ -28,7 +28,7 @@ bool MediaPlayer::open(String location)
             }
             else
             {
-                Console::error("Invalid protocol. Currently SmartRadio only support HTTP protocol.");
+                Console::error("Invalid protocol. Currently SmartPod only support HTTP protocol.");
                 return false;
             }
         }

@@ -22,6 +22,7 @@
 
 #include "./player/MediaPlayer.h"
 #include "./wifi/WiFiConnector.h"
+#include "./controller/ButtonController.h"
 
 // You can find PIN wiring defininitions in "wiring.h"
 #include "./wiring.h"
@@ -42,7 +43,7 @@ extern "C" {
 // Global Objects
 VS1053 vs1053(VS1053_XCS_PIN, VS1053_XDCS_PIN, VS1053_DREQ_PIN);
 MediaPlayer mediaPlayer(&vs1053);
-
+ButtonController buttonController;
 
 
 
@@ -51,7 +52,7 @@ void setup()
 {
     Console::begin();
     Console::line();
-    Console::info("SmartRadio is now starting...");
+    Console::info("SmartPod is now starting...");
 
 
     // ** Setup CPU **
@@ -65,7 +66,7 @@ void setup()
 
 
 
-
+    /*
     // ** Setup File System **
     // Here we use SPIFFS(ESP8266 built-in File System) to store stations and other settings,
     // as well as short sound effects.
@@ -82,7 +83,7 @@ void setup()
     bool wifiConnected = WiFiConnector::begin();
     if (!wifiConnected)
     {
-        Console::fatal("SmartRadio failed to start up.\nReason: No WiFi Connection.");
+        Console::fatal("SmartPod failed to start up.\nReason: No WiFi Connection.");
         return;
     }
     // Setup OTA firmware update
@@ -92,36 +93,44 @@ void setup()
 
 
 
+
     // ** Setup VS1053 **
     SPI.begin();
     bool vs1053Enabled = vs1053.begin();
     if (!vs1053Enabled)
     {
-        Console::fatal("SmartRadio failed to start up.\nReason: VS1053 can not be started.");
+        Console::fatal("SmartPod failed to start up.\nReason: VS1053 can not be started.");
         return;
     }
     // Set the initial volume
     vs1053.setVolume(90);
+    */
 
 
+    // Setup Buttons
+    buttonController.begin();
 
 
     /**
      * YES, WE'RE READY TO PLAY!
      */
-    Console::info("SmartRadio is now running...");
+    Console::info("SmartPod is now running...");
 
 
 
     //mediaPlayer.open("/test.mp3");
-    //mediaPlayer.open("http://lhttp.qingting.fm/live/387/64k.mp3"); // NCR Finance
-    mediaPlayer.open("http://http.qingting.fm/4963.mp3"); // Nanjing Music Radio
+    //mediaPlayer.open("http://http.qingting.fm/387.mp3"); // NCR Finance
+    //mediaPlayer.open("http://http.qingting.fm/4963.mp3"); // Nanjing Music Radio
     //mediaPlayer.open("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
-    //mediaPlayer.open("http://od.qingting.fm/vod/00/00/0000000000000000000026111078_24.m4a");
 }
 
 void loop()
 {
-    ArduinoOTA.handle();
-    mediaPlayer.handle();
+    buttonController.handle();
+
+    //ArduinoOTA.handle();
+
+    //buttonController.handle();
+
+    //mediaPlayer.handle();
 }

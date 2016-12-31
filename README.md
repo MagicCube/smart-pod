@@ -1,4 +1,4 @@
-# smart-radio
+# smart-pod
 An ESP8266 and VS1053 driven WebRadio and Internet music player.
 
 ## Features
@@ -62,11 +62,11 @@ An ESP8266 and VS1053 driven WebRadio and Internet music player.
 
 * **Power Button**
 * **Left Button** (D3, pull-up)
-  * Single click - Play previous song.
-  * Long-press - Decrease volume.
+  * Single click - play previous song / switch to previous station.
+  * Long-press - decrease volume.
 * **Right Button** (D4, pull-up)
-  - Single click - Play next song.
-  - Long-press - Increase volume.
+  - Single click - play next song / switch to next station.
+  - Long-press - increase volume.
 * **Middle Button** (A0, connect to 5v)
-  - Single click - Play / Pause.
-  - Long-press - Switch mode between radio and music.
+  - Single click - play / pause.
+  - Long-press - switch mode between radio and music.
