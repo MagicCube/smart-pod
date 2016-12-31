@@ -42,7 +42,7 @@ void LocalMediaStream::flush()
 
 
 
-size_t LocalMediaStream::totalSize()
+int LocalMediaStream::totalSize()
 {
     return _fileStream.size();
 }

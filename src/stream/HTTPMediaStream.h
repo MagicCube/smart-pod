@@ -15,12 +15,16 @@ class HTTPMediaStream : public MediaStream
     int peek() override;
     void flush() override;
 
-    size_t totalSize() override;
+    int totalSize() override;
 
   private:
-    size_t _totalSize;
+    int _chunkSize;
+    int _chunkIndex;
+    int _totalSize;
     HTTPClient2 _httpClient;
     WiFiClient* _httpStream;
+
+    void _readChunkSize();
 };
 
 #endif
