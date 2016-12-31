@@ -145,6 +145,7 @@ void ButtonController::_middleButton_onPressed()
 void ButtonController::_middleButton_onLongPressed()
 {
     Console::debug("[M] long pressed.");
+    _smartPod->switchMode();
 }
 
 

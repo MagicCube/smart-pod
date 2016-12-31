@@ -68,6 +68,7 @@ void HTTPMediaStream::close()
 {
     if (!_closed)
     {
+        Console::info("Closing HTTPMediaStream...");
         _httpClient.end();
         if (_httpStream)
         {
@@ -80,6 +81,7 @@ void HTTPMediaStream::close()
                 delay(100);
             }
         }
+        Console::info("HTTPMediaStream closed.");
     }
     _valid = false;
     _closed = true;

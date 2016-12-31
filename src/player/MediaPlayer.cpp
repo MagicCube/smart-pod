@@ -10,6 +10,11 @@ MediaPlayer::MediaPlayer(VS1053 *vs1053)
 
 bool MediaPlayer::open(String location)
 {
+    if (_mediaStream)
+    {
+        _mediaStream->close();
+    }
+
     if (location.startsWith("/"))
     {
         if (!_localMediaStream)
@@ -64,7 +69,7 @@ void MediaPlayer::handle()
 
 void MediaPlayer::_handleMediaStream()
 {
-    if (!_mediaStream) return;
+    if (!_mediaStream || !_mediaStream->isValid() || _mediaStream->isClosed()) return;
 
     static __attribute__((aligned(4))) char buffer[MEDIA_PLAYER_BUFFER_SIZE];
 

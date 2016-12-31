@@ -39,6 +39,7 @@ void LocalMediaStream::close()
     if (!_closed)
     {
         _fileStream.close();
+        Console::info("LocalMediaStream closed.");
     }
     _closed = true;
     _valid = false;

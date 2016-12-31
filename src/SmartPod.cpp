@@ -21,6 +21,7 @@ bool SmartPod::begin()
 
 void SmartPod::switchMode(SmartPodMode mode)
 {
+    _mode = mode;
     if (mode == RADIO)
     {
         Console::info("Switch to [Radio] mode.");
