@@ -3,7 +3,7 @@
 
 #include <ESP8266HTTPClient.h>
 
-class HTTPClient2 : public HTTPClient
+class HTTPClient_TE : public HTTPClient
 {
 public:
     transferEncoding_t getTransferEncoding();

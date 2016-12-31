@@ -2,7 +2,7 @@
 #define HTTP_MEDIA_STREAM
 
 #include <Arduino.h>
-#include "../http/HTTPClient2.h"
+#include "../http/HTTPClient_TE.h"
 
 #include "MediaStream.h"
 
@@ -21,7 +21,7 @@ class HTTPMediaStream : public MediaStream
     int _chunkSize;
     int _chunkIndex;
     int _totalSize;
-    HTTPClient2 _httpClient;
+    HTTPClient_TE _httpClient;
     WiFiClient* _httpStream;
 
     void _readChunkSize();
