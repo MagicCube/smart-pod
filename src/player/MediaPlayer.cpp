@@ -52,13 +52,18 @@ bool MediaPlayer::open(String location)
 
 void MediaPlayer::handle()
 {
+    _handleMediaStream();
+}
+
+void MediaPlayer::_handleMediaStream()
+{
     static __attribute__((aligned(4))) char buffer[MEDIA_PLAYER_BUFFER_SIZE];
 
     // First we need to confirm whether VS1053 is enable to receive data.
     if (_vs1053->data_request())
     {
         size_t len = _mediaStream->available();
-        if (len <= 0)
+        if (len == 0)
         {
             return;
         }
@@ -71,6 +76,9 @@ void MediaPlayer::handle()
         }
 
         len = _mediaStream->readBytes(buffer, len);
-        _vs1053->playChunk((uint8 *)buffer, len);
+        if (len > 0)
+        {
+            _vs1053->playChunk((uint8 *)buffer, len);
+        }
     }
 }

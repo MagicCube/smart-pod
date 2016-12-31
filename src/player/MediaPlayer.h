@@ -20,6 +20,8 @@ public:
 protected:
     VS1053* _vs1053;
     MediaStream* _mediaStream;
+
+    void _handleMediaStream();
 };
 
 #endif

@@ -101,7 +101,7 @@ void setup()
         return;
     }
     // Set the initial volume
-    vs1053.setVolume(85);
+    vs1053.setVolume(100);
 
 
 
