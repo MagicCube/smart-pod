@@ -1,4 +1,9 @@
-// VS1053 Settings
+// VS1053
 #define VS1053_XCS_PIN D1
 #define VS1053_XDCS_PIN D0
 #define VS1053_DREQ_PIN D2
+
+// Buttons
+#define LEFT_BUTTON_PIN D3
+#define RIGHT_BUTTON_PIN D4
+#define MIDDLE_BUTTON_PIN A0
