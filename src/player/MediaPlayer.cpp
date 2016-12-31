@@ -1,16 +1,45 @@
 #include "MediaPlayer.h"
 
+#include <Console.h>
+#include <URLParser.h>
+
 #include "../stream/LocalMediaStream.h"
+#include "../stream/HTTPMediaStream.h"
 
 MediaPlayer::MediaPlayer(VS1053 *vs1053)
 {
     this->vs1053 = vs1053;
 }
 
-bool MediaPlayer::open(String path)
+bool MediaPlayer::open(String location)
 {
-    mediaStream = new LocalMediaStream(path);
-    return true;
+    if (location.startsWith("/"))
+    {
+        mediaStream = new LocalMediaStream(location);
+    }
+    else
+    {
+        URL url = parseURL(location);
+        if (url.isValid)
+        {
+            if (url.protocol.equalsIgnoreCase("http"))
+            {
+                mediaStream = new HTTPMediaStream(location);
+            }
+            else
+            {
+                Console::error("Invalid protocol. Currently SmartRadio only support HTTP protocol.");
+                return false;
+            }
+        }
+        else
+        {
+            Console::error("Invalid URL.");
+            return false;
+        }
+    }
+
+    return mediaStream && mediaStream->isValid();
 }
 
 void MediaPlayer::handle()
