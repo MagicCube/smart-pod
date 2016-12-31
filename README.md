@@ -38,17 +38,35 @@ An ESP8266 and VS1053 driven WebRadio and Internet music player.
 
 
 ## Wiring
-| ESP8266 / ESP-12 | Wired to VS1053 | Wired to Rest |
-| ---------------- | --------------- | ------------- |
-| D0               | XDCS            |               |
-| D1               | XCS             |               |
-| D2               | DREQ            |               |
-| D3               |                 |               |
-| D4               |                 |               |
-| D5               | SCLK            |               |
-| D6               | MISO            |               |
-| D7               | MOSI            |               |
-| D8               |                 |               |
-| D9               |                 |               |
-| D10              |                 |               |
-| RST              | XRST            |               |
+| ESP8266 / ESP-12 | VS1053 | Middle Button | Left Button | Right Button |
+| ---------------- | ------ | ------------- | ----------- | ------------ |
+| D0               | XDCS   |               |             |              |
+| D1               | XCS    |               |             |              |
+| D2               | DREQ   |               |             |              |
+| D3               |        |               | PIN1        |              |
+| D4               |        |               |             | PIN1         |
+| D5               | SCLK   |               |             |              |
+| D6               | MISO   |               |             |              |
+| D7               | MOSI   |               |             |              |
+| D8               |        |               |             |              |
+| A0               |        | PIN1          |             |              |
+| **RST**          | XRST   |               |             |              |
+| **5v**           | VCC    | PIN2          |             |              |
+| **GND**          | GND    |               | PIN2        | PIN2         |
+
+
+
+## Controlling
+
+### Button Controller
+
+* **Power Button**
+* **Left Button** (D3, pull-up)
+  * Single click - Play previous song.
+  * Long-press - Decrease volume.
+* **Right Button** (D4, pull-up)
+  - Single click - Play next song.
+  - Long-press - Increase volume.
+* **Middle Button** (A0, connect to 5v)
+  - Single click - Play / Pause.
+  - Long-press - Switch mode between radio and music.
