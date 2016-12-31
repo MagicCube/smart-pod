@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 
+#include "../SmartPod.h"
+
 #define BUTTON_PRESS_BETWEEN 200
 #define BUTTON_REPEAT_UNTIL 500
 #define BUTTON_REPEAT_DURATION 200
@@ -11,10 +13,13 @@
 class ButtonController
 {
   public:
+    ButtonController(SmartPod *smartPod);
     void begin();
     void handle();
 
   private:
+    SmartPod* _smartPod;
+
     long _middleButtonDown = 0;
     long _middleButtonUp = 0;
     bool _middleButtonLongPressed = false;

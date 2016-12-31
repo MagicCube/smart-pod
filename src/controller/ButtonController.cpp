@@ -4,6 +4,11 @@
 
 #include "../wiring.h"
 
+ButtonController::ButtonController(SmartPod *smartPod)
+{
+    _smartPod = smartPod;
+}
+
 void ButtonController::begin()
 {
     pinMode(MIDDLE_BUTTON_PIN, INPUT);
@@ -150,6 +155,7 @@ void ButtonController::_rightButton_onPressed()
 void ButtonController::_rightButton_onLongPressed()
 {
     Console::debug("[>>] long pressed.");
+    _smartPod->setVolumeUp();
 }
 
 
@@ -160,4 +166,5 @@ void ButtonController::_leftButton_onPressed()
 void ButtonController::_leftButton_onLongPressed()
 {
     Console::debug("[<<] long pressed.");
+    _smartPod->setVolumeDown();
 }
