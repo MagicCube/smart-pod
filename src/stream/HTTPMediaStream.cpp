@@ -19,6 +19,8 @@ HTTPMediaStream::HTTPMediaStream(String url)
         {
             if (httpCode == HTTP_CODE_OK)
             {
+                Console::info("%s has been loaded.", url.c_str());
+                
                 if (httpClient.getTransferEncoding() == HTTPC_TE_IDENTITY)
                 {
                     Console::debug("Content-length: %d", httpClient.getSize());
@@ -28,7 +30,6 @@ HTTPMediaStream::HTTPMediaStream(String url)
                     Console::debug("Transfer-encoding: chunked");
                 }
                 httpStream = httpClient.getStreamPtr();
-                Console::info("%s has been loaded.", url.c_str());
                 setValid(true);
             }
             else
