@@ -8,11 +8,15 @@ LocalMediaStream::LocalMediaStream(String path)
     fileStream = SPIFFS.open(path, "r"); // Open the file
     if (!fileStream)
     {
-        Console::info("Error opening file %s", path.c_str()); // No luck
-        return;
+        Console::info("Error opening file %s", path.c_str());
+        this->setValid(false);
     }
-    Console::info("%s has been loaded.", path.c_str());
-    Console::debug("File size: %d", fileStream.size());
+    else
+    {
+        Console::info("%s has been loaded.", path.c_str());
+        Console::debug("File size: %d", fileStream.size());
+        this->setValid(true);
+    }
 }
 
 int LocalMediaStream::available()
