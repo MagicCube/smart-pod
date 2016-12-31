@@ -13,7 +13,6 @@ HTTPMediaStream::HTTPMediaStream(String url)
     }
     else
     {
-        Console::info("%s has been loaded.", url.c_str());
         httpStream = httpClient.getStreamPtr();
         int httpCode = httpClient.GET();
         if (httpCode > 0)
@@ -25,7 +24,7 @@ HTTPMediaStream::HTTPMediaStream(String url)
                     Console::debug("[Chunked] transfer-encoding header was found.");
                 }
                 httpStream = httpClient.getStreamPtr();
-                Console::info("%s has been loading.", url.c_str());
+                Console::info("%s has been loaded.", url.c_str());
                 setValid(true);
             }
             else
