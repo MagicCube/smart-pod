@@ -10,6 +10,7 @@
 
 // Libraries for ESP8266 - Arduino
 #include <ArduinoOTA.h>
+#include <ESP8266mDNS.h>
 #include <FS.h>
 
 // Libraries for Hardwares
@@ -19,9 +20,7 @@
 #include <Console.h>
 #include <URLParser.h>
 
-#include "./media/MediaOutputBuffer.h"
-#include "./media/MediaPlayer.h"
-#include "./stream/GeneralInputBuffer.h"
+#include "./player/MediaPlayer.h"
 #include "./wifi/WiFiConnector.h"
 
 // You can find PIN wiring defininitions in "wiring.h"
@@ -75,7 +74,6 @@ void setup()
 
 
 
-
     // ** Setup WiFi **
     // According to my personal experiments, WiFi must be started before VS1053,
     // otherwise WiFi could not be well connected.
@@ -94,15 +92,16 @@ void setup()
 
 
 
-
     // ** Setup VS1053 **
     SPI.begin();
-    bool mediaPlayerEnabled = mediaPlayer.begin();
-    if (!mediaPlayerEnabled)
+    bool vs1053Enabled = vs1053.begin();
+    if (!vs1053Enabled)
     {
         Console::fatal("SmartRadio failed to start up.\nReason: VS1053 can not be started.");
         return;
     }
+    // Set the initial volume
+    vs1053.setVolume(85);
 
 
 
@@ -114,10 +113,10 @@ void setup()
 
 
 
-    //mediaPlayer.loadLocalFile("/record.mp3");
-    mediaPlayer.loadRemoteURL("http://lhttp.qingting.fm/live/387/64k.mp3"); // NCR Finance
-    //mediaPlayer.loadRemoteURL("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
-    //mediaPlayer.loadRemoteURL("http://od.qingting.fm/vod/00/00/0000000000000000000026111078_24.m4a");
+    //mediaPlayer.open("/test.mp3");
+    //mediaPlayer.open("http://lhttp.qingting.fm/live/387/64k.mp3"); // NCR Finance
+    mediaPlayer.open("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
+    //mediaPlayer.open("http://od.qingting.fm/vod/00/00/0000000000000000000026111078_24.m4a");
 }
 
 void loop()
