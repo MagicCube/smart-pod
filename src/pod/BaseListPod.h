@@ -76,7 +76,19 @@ public:
             _playIndex = getNextPlayIndex();
         }
         setVolume(getVolume());
-        openAndPlayCurrentMedia();
+        play();
+    }
+
+    virtual void play() override
+    {
+        if (!isPlaying())
+        {
+            if (_mediaPlayer->isClosed())
+            {
+                openCurrentMedia();
+            }
+            _playing = true;
+        }
     }
 
     virtual int getNextPlayIndex()
@@ -103,17 +115,19 @@ public:
 
     virtual void next() override
     {
-        _playIndex = getNextPlayIndex();
-        openAndPlayCurrentMedia();
+            _playIndex = getNextPlayIndex();
+        openCurrentMedia();
+        play();
     }
 
     virtual void prev() override
     {
         _playIndex = getPrevPlayIndex();
-        openAndPlayCurrentMedia();
+        openCurrentMedia();
+        play();
     }
 
-    virtual void openAndPlayCurrentMedia()
+    virtual void openCurrentMedia()
     {
         if (_playlist.size() == 0)
         {
@@ -131,7 +145,6 @@ public:
         String location = _playlist[_playIndex];
         Console::info("Playing %s", location.c_str());
         _mediaPlayer->open(location);
-        play();
     }
 
 protected:

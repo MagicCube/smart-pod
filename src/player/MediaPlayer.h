@@ -22,6 +22,8 @@ public:
     void close();
     void handle();
 
+    bool isClosed();
+
 protected:
     VS1053* _vs1053;
     LocalMediaStream* _localMediaStream;

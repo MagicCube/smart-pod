@@ -72,6 +72,18 @@ void MediaPlayer::close()
     }
 }
 
+bool MediaPlayer::isClosed()
+{
+    if (_mediaStream)
+    {
+        if (_mediaStream->isValid())
+        {
+            return _mediaStream->isClosed();
+        }
+    }
+    return true;
+}
+
 void MediaPlayer::handle()
 {
     _handleMediaStream();
