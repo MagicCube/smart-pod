@@ -28,7 +28,7 @@ public:
 
 protected:
     bool _playing = false;
-    uint8_t _volume = 80;
+    uint8_t _volume = 90;
 
     MediaPlayer* _mediaPlayer;
 };
