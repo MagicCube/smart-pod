@@ -20,8 +20,8 @@
 #include <Console.h>
 #include <URLParser.h>
 
-#include "./pod/SmartPod.h"
 #include "./controller/ButtonController.h"
+#include "./pod/SmartPod.h"
 #include "./wifi/WiFiConnector.h"
 
 // In order to invoke system_update_cpu_freq(),
@@ -31,16 +31,11 @@ extern "C" {
 }
 
 
-
-
-
-
 // Global Variables
 
 // Global Objects
 SmartPod smartPod;
 ButtonController buttonController(&smartPod);
-
 
 
 void setup()
@@ -60,13 +55,16 @@ void setup()
     system_update_cpu_freq(CPU_SPEED);
 
 
-
     // ** Setup File System **
     // Here we use SPIFFS(ESP8266 built-in File System) to store stations and other settings,
     // as well as short sound effects.
     Console::info("Setting up file system....");
     SPIFFS.begin();
-
+    Dir dir = SPIFFS.openDir("/"); // Show files in FS
+    while (dir.next())
+    {
+        Console::info("%32s - %7d", dir.fileName().c_str(), dir.fileSize());
+    }
 
 
     // ** Setup WiFi **
@@ -81,11 +79,8 @@ void setup()
         return;
     }
     // Setup OTA firmware update
-    //Console::info("Setting up OTA...");
-    //ArduinoOTA.begin();
-
-
-
+    // Console::info("Setting up OTA...");
+    // ArduinoOTA.begin();
 
 
     // ** Setup VS1053 **
@@ -115,8 +110,8 @@ void setup()
 
 void loop()
 {
-    //buttonController.handle();
-    //ArduinoOTA.handle();
+    // buttonController.handle();
+    // ArduinoOTA.handle();
     buttonController.handle();
     smartPod.handle();
 }

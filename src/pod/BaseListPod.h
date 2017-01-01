@@ -32,18 +32,25 @@ public:
         clearPlaylist();
         Console::info("Loading playlist from %s...", path.c_str());
         File playlistStream = SPIFFS.open(path, "r");
-        while (playlistStream.available())
+        if (playlistStream)
         {
-            String line = playlistStream.readStringUntil('\n');
-            line.trim();
-            if (line.length() == 0 || line.startsWith("#"))
+            while (playlistStream.available())
             {
-                continue;
+                String line = playlistStream.readStringUntil('\n');
+                line.trim();
+                if (line.length() == 0 || line.startsWith("#"))
+                {
+                    continue;
+                }
+                addToPlaylist(line);
             }
-            addToPlaylist(line);
+            playlistStream.close();
+            Console::info("%d items has been loaded to the playlist.", _playlist.size());
         }
-        playlistStream.close();
-        Console::info("%d items has been loaded to the playlist.", _playlist.size());
+        else
+        {
+            Console::error("Can not load %s.", path.c_str());
+        }
         _playIndex = 0;
     }
 
