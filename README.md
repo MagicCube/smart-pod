@@ -63,7 +63,7 @@ An ESP8266 and VS1053 driven WebRadio and Internet music player.
 * **Left Button** (D3, pull-up)
   - Single click - play previous song / switch to previous station.
   - Long-press - decrease volume.
-  - Press and hold for 1.5 seconds - restart SmartRadio.
+  - Press and hold for 1.5 seconds - restart SmartPod.
 * **Right Button** (D4, pull-up)
   - Single click - play next song / switch to next station.
   - Long-press - increase volume.
