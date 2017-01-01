@@ -41,6 +41,11 @@ void ButtonController::handle()
                 _middleButtonLongPressed = true;
                 _middleButton_onLongPressed();
             }
+            else if (millis() - _middleButtonDown > 1500)
+            {
+                _smartPod.restart();
+                return;
+            }
         }
         else
         {

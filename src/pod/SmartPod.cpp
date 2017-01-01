@@ -185,3 +185,8 @@ void SmartPod::setVolumeDown()
 {
     setVolume(getVolume() - 5);
 }
+
+void SmartPod::restart()
+{
+    ESP.restart();
+}

@@ -43,6 +43,8 @@ public:
     void setVolumeUp();
     void setVolumeDown();
 
+    void restart();
+
 private:
     SmartPodMode _mode = RADIO_POD;
     VS1053 _vs1053;
