@@ -60,6 +60,7 @@ void setup()
     // as well as short sound effects.
     Console::info("Setting up file system....");
     SPIFFS.begin();
+    Console::info("Files:");
     Dir dir = SPIFFS.openDir("/"); // Show files in FS
     while (dir.next())
     {
