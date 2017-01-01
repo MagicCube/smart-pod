@@ -3,19 +3,16 @@
 
 #include <Arduino.h>
 
-#include "BasePod.h"
+#include "BaseListPod.h"
 
-class RadioPod : public BasePod
+class RadioPod : public BaseListPod
 {
 public:
     RadioPod(MediaPlayer *mediaPlayer);
 
-    void activate() override;
-    void play() override;
+    void loadPlaylist();
     void pause() override;
     void stop() override;
-    void next() override;
-    void prev() override;
 };
 
 #endif

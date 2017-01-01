@@ -35,6 +35,30 @@ public:
     }
 
 
+    virtual void play()
+    {
+        if (!isPlaying())
+        {
+            _playing = true;
+        }
+    }
+
+    virtual void pause()
+    {
+        if (isPlaying())
+        {
+            _playing = false;
+        }
+    }
+
+    virtual void stop()
+    {
+        pause();
+        _mediaPlayer->close();
+    }
+
+
+
     virtual uint8_t getVolume()
     {
         return _volume;

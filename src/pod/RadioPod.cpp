@@ -1,23 +1,13 @@
 #include "RadioPod.h"
 
-RadioPod::RadioPod(MediaPlayer *mediaPlayer) : BasePod(mediaPlayer)
+RadioPod::RadioPod(MediaPlayer *mediaPlayer) : BaseListPod(mediaPlayer)
 {
 
 }
 
-void RadioPod::activate()
+void RadioPod::loadPlaylist()
 {
-    setVolume(getVolume());
-    play();
-}
-
-void RadioPod::play()
-{
-    if (!isPlaying())
-    {
-        _mediaPlayer->open("http://http.qingting.fm/387.mp3"); // NCR Finance
-        _playing = true;
-    }
+    loadPlayListFromLocal("/radio-pod.m3u");
 }
 
 void RadioPod::pause()
@@ -32,14 +22,4 @@ void RadioPod::stop()
         _playing = false;
     }
     _mediaPlayer->close();
-}
-
-void RadioPod::next()
-{
-
-}
-
-void RadioPod::prev()
-{
-
 }
