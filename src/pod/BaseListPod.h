@@ -72,36 +72,62 @@ public:
         if (_playlist.size() == 0)
         {
             loadPlaylist();
-            _playIndex = 0;
+            _playIndex = -1;
+            _playIndex = getNextPlayIndex();
         }
         setVolume(getVolume());
         openAndPlayCurrentMedia();
     }
 
+    virtual int getNextPlayIndex()
+    {
+        int playIndex = _playIndex + 1;
+        if (playIndex > _playlist.size() - 1)
+        {
+            // Forward to the first item
+            playIndex = 0;
+        }
+        return playIndex;
+    }
+
+    virtual int getPrevPlayIndex()
+    {
+        int playIndex = _playIndex - 1;
+        if (_playIndex < 0)
+        {
+            // Back to the last item
+            _playIndex = _playlist.size() - 1;
+        }
+        return playIndex;
+    }
+
     virtual void next() override
     {
-        _playIndex++;
-        if (_playIndex > _playlist.size() - 1)
-        {
-            // Cycling
-            _playIndex = 0;
-        }
+        _playIndex = getNextPlayIndex();
         openAndPlayCurrentMedia();
     }
 
     virtual void prev() override
     {
-        _playIndex--;
-        if (_playIndex < 0)
-        {
-            // Cycling
-            _playIndex = _playlist.size() - 1;
-        }
+        _playIndex = getPrevPlayIndex();
         openAndPlayCurrentMedia();
     }
 
     virtual void openAndPlayCurrentMedia()
     {
+        if (_playlist.size() == 0)
+        {
+            _playIndex = 0;
+            return;
+        }
+        if (_playIndex < 0)
+        {
+            _playIndex = _playlist.size() - 1;
+        }
+        else if (_playIndex > _playlist.size() - 1)
+        {
+            _playIndex = 0;
+        }
         String location = _playlist[_playIndex];
         Console::info("Playing %s", location.c_str());
         _mediaPlayer->open(location);
