@@ -20,7 +20,7 @@
 #include <Console.h>
 #include <URLParser.h>
 
-#include "./SmartPod.h"
+#include "./pod/SmartPod.h"
 #include "./controller/ButtonController.h"
 #include "./wifi/WiFiConnector.h"
 
