@@ -29,15 +29,19 @@ public:
     void switchMode();
 
     void activate() override;
+    void deactivate() override;
     bool isPlaying() override;
     void play() override;
     void pause() override;
-    void playPause() override;
     void stop() override;
     void next() override;
     void prev() override;
     uint8_t getVolume() override;
     void setVolume(uint8_t volume) override;
+
+    void playPause();
+    void setVolumeUp();
+    void setVolumeDown();
 
 private:
     SmartPodMode _mode = RADIO_POD;

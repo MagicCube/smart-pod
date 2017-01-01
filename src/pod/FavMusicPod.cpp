@@ -1,6 +1,6 @@
 #include "FavMusicPod.h"
 
-FavMusicPod::FavMusicPod(MediaPlayer *mediaPlayer) : Pod(mediaPlayer)
+FavMusicPod::FavMusicPod(MediaPlayer *mediaPlayer) : BasePod(mediaPlayer)
 {
 
 }

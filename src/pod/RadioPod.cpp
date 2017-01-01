@@ -1,6 +1,6 @@
 #include "RadioPod.h"
 
-RadioPod::RadioPod(MediaPlayer *mediaPlayer) : Pod(mediaPlayer)
+RadioPod::RadioPod(MediaPlayer *mediaPlayer) : BasePod(mediaPlayer)
 {
 
 }

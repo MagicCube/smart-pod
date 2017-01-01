@@ -73,6 +73,14 @@ void SmartPod::activate()
     }
 }
 
+void SmartPod::deactivate()
+{
+    if (_activePod)
+    {
+        _activePod->deactivate();
+    }
+}
+
 void SmartPod::handle()
 {
     if (_activePod)
@@ -113,7 +121,14 @@ void SmartPod::playPause()
 {
     if (_activePod)
     {
-        _activePod->playPause();
+        if (isPlaying())
+        {
+            pause();
+        }
+        else
+        {
+            play();
+        }
     }
 }
 
@@ -159,4 +174,14 @@ void SmartPod::setVolume(uint8_t volume)
     {
         _activePod->setVolume(volume);
     }
+}
+
+void SmartPod::setVolumeUp()
+{
+    setVolume(getVolume() + 5);
+}
+
+void SmartPod::setVolumeDown()
+{
+    setVolume(getVolume() - 5);
 }

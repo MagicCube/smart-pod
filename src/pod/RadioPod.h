@@ -3,9 +3,9 @@
 
 #include <Arduino.h>
 
-#include "Pod.h"
+#include "BasePod.h"
 
-class RadioPod : public Pod
+class RadioPod : public BasePod
 {
 public:
     RadioPod(MediaPlayer *mediaPlayer);
