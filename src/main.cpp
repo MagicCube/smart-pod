@@ -94,6 +94,9 @@ void setup()
     if (!smartPodEnabled)
     {
         Console::fatal("SmartPod failed to start up.");
+        Console::info("Reboot after 1 second.");
+        delay(1000);
+        ESP.restart();
         return;
     }
 
