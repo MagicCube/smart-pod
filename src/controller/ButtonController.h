@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#include "../SmartPod.h"
+#include "../pod/SmartPod.h"
 
 #define BUTTON_PRESS_BETWEEN 200
 #define BUTTON_REPEAT_UNTIL 500
