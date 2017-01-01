@@ -8,12 +8,14 @@ MediaPlayer::MediaPlayer(VS1053 *vs1053)
     _vs1053 = vs1053;
 }
 
+VS1053* MediaPlayer::getVS1053()
+{
+    return _vs1053;
+}
+
 bool MediaPlayer::open(String location)
 {
-    if (_mediaStream)
-    {
-        _mediaStream->close();
-    }
+    close();
 
     if (location.startsWith("/"))
     {
@@ -59,6 +61,14 @@ bool MediaPlayer::open(String location)
     else
     {
         return false;
+    }
+}
+
+void MediaPlayer::close()
+{
+    if (_mediaStream)
+    {
+        _mediaStream->close();
     }
 }
 

@@ -16,7 +16,10 @@ class MediaPlayer
 public:
     MediaPlayer(VS1053* vs1053);
 
+    VS1053* getVS1053();
+
     bool open(String location);
+    void close();
     void handle();
 
 protected:

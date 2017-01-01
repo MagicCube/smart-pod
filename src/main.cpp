@@ -107,7 +107,7 @@ void setup()
      */
     Console::info("SmartPod is now running...");
 
-    smartPod.switchMode(RADIO);
+    smartPod.switchMode(RADIO_POD);
 }
 
 void loop()

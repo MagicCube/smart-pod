@@ -2,9 +2,10 @@
 
 #include <Console.h>
 
-SmartPod::SmartPod() : _vs1053(VS1053_XCS_PIN, VS1053_XDCS_PIN, VS1053_DREQ_PIN), _mediaPlayer(&_vs1053)
+SmartPod::SmartPod() : _vs1053(VS1053_XCS_PIN, VS1053_XDCS_PIN, VS1053_DREQ_PIN),
+                       Pod(NULL)
 {
-
+    _mediaPlayer = new MediaPlayer(&_vs1053);
 }
 
 bool SmartPod::begin()
@@ -21,66 +22,141 @@ bool SmartPod::begin()
 
 void SmartPod::switchMode(SmartPodMode mode)
 {
+    // Deactive the current Pod
+    if (_activePod)
+    {
+        _activePod->deactivate();
+    }
+
     _mode = mode;
-    if (mode == RADIO)
+    if (_mode == RADIO_POD)
     {
-        Console::info("Switch to [Radio] mode.");
-        _mediaPlayer.open("http://http.qingting.fm/387.mp3"); // NCR Finance
-        //mediaPlayer.open("http://http.qingting.fm/4963.mp3"); // Nanjing Music Radio
+        Console::info("Switch to [RadioPod] mode.");
+        if (!_radioPod)
+        {
+            _radioPod = new RadioPod(_mediaPlayer);
+        }
+        _activePod = _radioPod;
     }
-    else if (mode == FAV_MUSIC_LIST)
+    else if (_mode == FAV_MUSIC_POD)
     {
-        Console::info("Switch to [FavMusicList] mode.");
-        //mediaPlayer.open("/test.mp3");
-        _mediaPlayer.open("http://m2.music.126.net/NG4I9FVAm9jCQCvszfLB8Q==/1377688074172063.mp3");
+        Console::info("Switch to [FavMusicPod] mode.");
+        if (!_favMusicPod)
+        {
+            _favMusicPod = new FavMusicPod(_mediaPlayer);
+        }
+        _activePod = _favMusicPod;
     }
+
+    activate();
 }
 
 void SmartPod::switchMode()
 {
-    if (_mode == RADIO)
+    if (_mode == RADIO_POD)
     {
-        switchMode(FAV_MUSIC_LIST);
+        switchMode(FAV_MUSIC_POD);
     }
-    else if (_mode == FAV_MUSIC_LIST)
+    else if (_mode == FAV_MUSIC_POD)
     {
-        switchMode(RADIO);
+        switchMode(RADIO_POD);
+    }
+}
+
+
+
+void SmartPod::activate()
+{
+    if (_activePod)
+    {
+        _activePod->activate();
     }
 }
 
 void SmartPod::handle()
 {
-    _mediaPlayer.handle();
+    if (_activePod)
+    {
+        _activePod->handle();
+    }
 }
 
+bool SmartPod::isPlaying()
+{
+    if (_activePod)
+    {
+        return _activePod->isPlaying();
+    }
+    else
+    {
+        return false;
+    }
+}
 
+void SmartPod::play()
+{
+    if (_activePod)
+    {
+        _activePod->play();
+    }
+}
 
+void SmartPod::pause()
+{
+    if (_activePod)
+    {
+        _activePod->pause();
+    }
+}
+
+void SmartPod::playPause()
+{
+    if (_activePod)
+    {
+        _activePod->playPause();
+    }
+}
+
+void SmartPod::stop()
+{
+    if (_activePod)
+    {
+        _activePod->stop();
+    }
+}
+
+void SmartPod::next()
+{
+    if (_activePod)
+    {
+        _activePod->next();
+    }
+}
+
+void SmartPod::prev()
+{
+    if (_activePod)
+    {
+        _activePod->prev();
+    }
+}
 
 uint8_t SmartPod::getVolume()
 {
-    return _vs1053.getVolume();
-}
-
-void SmartPod::setVolume(int volume)
-{
-    if (volume > 100)
+    if (_activePod)
     {
-        volume = 100;
+        return _activePod->getVolume();
     }
-    else if (volume < 0)
+    else
     {
-        volume = 0;
+        return 0;
     }
-    _vs1053.setVolume(volume);
-    Console::info("Setting volume to %d.", volume);
 }
 
-void SmartPod::setVolumeUp()
+void SmartPod::setVolume(uint8_t volume)
 {
-    setVolume(getVolume() + 5);
-}
-
-void SmartPod::setVolumeDown()
-{
-    setVolume(getVolume() - 5);
+    if (_activePod)
+    {
+        _activePod->setVolume(volume);
+    }
 }

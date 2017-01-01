@@ -140,32 +140,35 @@ void ButtonController::handle()
 
 void ButtonController::_middleButton_onPressed()
 {
-    Console::debug("[M] pressed.");
+    Console::debug("[P] PLAY / PAUSE");
+    _smartPod->playPause();
 }
 void ButtonController::_middleButton_onLongPressed()
 {
-    Console::debug("[M] long pressed.");
+    Console::debug("[M] SWITCH MODE");
     _smartPod->switchMode();
 }
 
 
 void ButtonController::_rightButton_onPressed()
 {
-    Console::debug("[>>] pressed.");
+    Console::debug("[>] NEXT");
+    _smartPod->next();
 }
 void ButtonController::_rightButton_onLongPressed()
 {
-    Console::debug("[>>] long pressed.");
+    Console::debug("[+] VOLUME UP");
     _smartPod->setVolumeUp();
 }
 
 
 void ButtonController::_leftButton_onPressed()
 {
-    Console::debug("[<<] pressed.");
+    Console::debug("[<] PREVIOUS");
+    _smartPod->prev();
 }
 void ButtonController::_leftButton_onLongPressed()
 {
-    Console::debug("[<<] long pressed.");
+    Console::debug("[-] VOLUME DOWN");
     _smartPod->setVolumeDown();
 }

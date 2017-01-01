@@ -5,34 +5,47 @@
 
 #include <VS1053.h>
 
-#include "wiring.h"
+#include "../wiring.h"
 #include "./player/MediaPlayer.h"
 
+#include "Pod.h"
+#include "FavMusicPod.h"
+#include "RadioPod.h"
+
 typedef enum {
-    RADIO,
-    FAV_MUSIC_LIST
+    RADIO_POD,
+    FAV_MUSIC_POD
 } SmartPodMode;
 
-class SmartPod
+class SmartPod : public Pod
 {
 public:
     SmartPod();
 
     bool begin();
-    void handle();
+    void handle() override;
 
     void switchMode(SmartPodMode mode);
     void switchMode();
 
-    uint8_t getVolume();
-    void setVolume(int volume);
-    void setVolumeUp();
-    void setVolumeDown();
+    void activate() override;
+    bool isPlaying() override;
+    void play() override;
+    void pause() override;
+    void playPause() override;
+    void stop() override;
+    void next() override;
+    void prev() override;
+    uint8_t getVolume() override;
+    void setVolume(uint8_t volume) override;
 
 private:
-    SmartPodMode _mode = RADIO;
+    SmartPodMode _mode = RADIO_POD;
     VS1053 _vs1053;
-    MediaPlayer _mediaPlayer;
+
+    Pod* _activePod;
+    RadioPod* _radioPod;
+    FavMusicPod* _favMusicPod;
 };
 
 #endif
