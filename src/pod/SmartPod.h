@@ -25,6 +25,9 @@ public:
     bool begin();
     void handle() override;
 
+    void restart();
+    void sleep();
+
     void switchMode(SmartPodMode mode);
     void switchMode();
 
@@ -42,8 +45,6 @@ public:
     void playPause();
     void setVolumeUp();
     void setVolumeDown();
-
-    void restart();
 
 private:
     SmartPodMode _mode = RADIO_POD;

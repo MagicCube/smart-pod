@@ -188,5 +188,14 @@ void SmartPod::setVolumeDown()
 
 void SmartPod::restart()
 {
+    Console::warn("SmartRadio is going to restart.");
+    delay(500);
     ESP.restart();
+}
+
+void SmartPod::sleep()
+{
+    Console::warn("SmartRadio is going to sleep.");
+    delay(500);
+    ESP.deepSleep(0);
 }
