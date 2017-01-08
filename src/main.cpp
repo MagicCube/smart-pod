@@ -80,8 +80,8 @@ void setup()
         return;
     }
     // Setup OTA firmware update
-    // Console::info("Setting up OTA...");
-    // ArduinoOTA.begin();
+    Console::info("Setting up OTA...");
+    ArduinoOTA.begin();
 
 
     // ** Setup VS1053 **
@@ -112,7 +112,7 @@ void setup()
 void loop()
 {
     // buttonController.handle();
-    // ArduinoOTA.handle();
+    ArduinoOTA.handle();
     buttonController.handle();
     smartPod.handle();
 }
