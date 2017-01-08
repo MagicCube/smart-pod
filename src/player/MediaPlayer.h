@@ -23,12 +23,16 @@ public:
     void handle();
 
     bool isClosed();
+    bool isEOF();
 
 protected:
     VS1053* _vs1053;
     LocalMediaStream* _localMediaStream;
     HTTPMediaStream* _httpMediaStream;
     MediaStream* _mediaStream;
+
+    long _totalBytes = 0;
+    bool _eof = false;
 
     void _handleMediaStream();
 };

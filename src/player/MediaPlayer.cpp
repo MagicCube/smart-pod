@@ -17,6 +17,11 @@ bool MediaPlayer::open(String location)
 {
     close();
 
+    _totalBytes = 0;
+    _eof = false;
+
+    bool success = false;
+
     if (location.startsWith("/"))
     {
         if (!_localMediaStream)
@@ -24,7 +29,11 @@ bool MediaPlayer::open(String location)
             _localMediaStream = new LocalMediaStream();
         }
         _mediaStream = _localMediaStream;
-        _mediaStream->open(location);
+        success = _mediaStream->open(location);
+        if (!success)
+        {
+            _eof = true;
+        }
     }
     else
     {
@@ -38,17 +47,23 @@ bool MediaPlayer::open(String location)
                     _httpMediaStream = new HTTPMediaStream();
                 }
                 _mediaStream = _httpMediaStream;
-                _mediaStream->open(location);
+                success = _mediaStream->open(location);
+                if (!success)
+                {
+                    _eof = true;
+                }
             }
             else
             {
                 Console::error("Invalid protocol. Currently SmartPod only support HTTP protocol.");
+                _eof = true;
                 return false;
             }
         }
         else
         {
             Console::error("Invalid URL.");
+            _eof = true;
             return false;
         }
     }
@@ -84,6 +99,11 @@ bool MediaPlayer::isClosed()
     return true;
 }
 
+bool MediaPlayer::isEOF()
+{
+    return _eof;
+}
+
 void MediaPlayer::handle()
 {
     _handleMediaStream();
@@ -91,7 +111,7 @@ void MediaPlayer::handle()
 
 void MediaPlayer::_handleMediaStream()
 {
-    if (!_mediaStream || !_mediaStream->isValid() || _mediaStream->isClosed()) return;
+    if (!_mediaStream || !_mediaStream->isValid() || _mediaStream->isClosed() || isEOF()) return;
 
     static __attribute__((aligned(4))) char buffer[MEDIA_PLAYER_BUFFER_SIZE];
 
@@ -114,7 +134,13 @@ void MediaPlayer::_handleMediaStream()
         len = _mediaStream->readBytes(buffer, len);
         if (len > 0)
         {
+            _totalBytes += len;
             _vs1053->playChunk((uint8 *)buffer, len);
+            if (_mediaStream->totalSize() > 0 && _totalBytes == _mediaStream->totalSize())
+            {
+                _eof = true;
+                Console::debug("End of media stream.");
+            }
         }
     }
 }
