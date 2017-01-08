@@ -70,7 +70,7 @@ bool MediaPlayer::open(String location)
 
     if (_mediaStream && _mediaStream->isValid())
     {
-        Console::debug("File size / First chunk size: %d", _mediaStream->totalSize());
+        Console::debug("File size: %d", _mediaStream->totalSize());
         return true;
     }
     else
