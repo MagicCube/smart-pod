@@ -43,8 +43,8 @@ An ESP8266 and VS1053 driven WebRadio and Internet music player.
 | D0               | XDCS   |               |             |              |
 | D1               | XCS    |               |             |              |
 | D2               | DREQ   |               |             |              |
-| D3               |        |               | PIN1        |              |
-| D4               |        |               |             | PIN1         |
+| D3               |        |               |             | PIN1         |
+| D4               |        |               | PIN1        |              |
 | D5               | SCLK   |               |             |              |
 | D6               | MISO   |               |             |              |
 | D7               | MOSI   |               |             |              |

@@ -4,6 +4,6 @@
 #define VS1053_DREQ_PIN D2
 
 // Buttons
-#define LEFT_BUTTON_PIN D3
-#define RIGHT_BUTTON_PIN D4
+#define LEFT_BUTTON_PIN D4
+#define RIGHT_BUTTON_PIN D3
 #define MIDDLE_BUTTON_PIN D8
