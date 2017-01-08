@@ -21,6 +21,19 @@ public:
     }
 
 
+    virtual void handle() override
+    {
+        if (isPlaying())
+        {
+            _mediaPlayer->handle();
+            if (_mediaPlayer->isEOF())
+            {
+                next();
+            }
+        }
+    }
+
+
 
     virtual void loadPlaylist()
     {
