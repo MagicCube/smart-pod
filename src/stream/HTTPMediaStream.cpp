@@ -162,7 +162,7 @@ void HTTPMediaStream::_readChunkSize()
     String chunkSizeStr = _httpStream->readStringUntil('\n');
     _chunkSize = __parseHex(chunkSizeStr.c_str());
     _chunkIndex = -1;
-    _totalSize += _chunkSize;
+    //_totalSize += _chunkSize;
 
     //Console::debug("Chunk size in hex: %s", chunkSizeStr.c_str());
     //Console::debug("Chunk size: %d", _chunkSize);
