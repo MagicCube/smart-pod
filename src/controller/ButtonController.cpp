@@ -43,7 +43,7 @@ void ButtonController::handle()
             }
             else if (millis() - _middleButtonDown > 1500)
             {
-                _smartPod->sleep();
+                //_smartPod->sleep();
                 return;
             }
         }
